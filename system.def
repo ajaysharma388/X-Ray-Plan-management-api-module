@@ -1,0 +1,81 @@
+(in-package :aml)
+
+
+(define-system :X-Ray-Plan-management-api-module
+  :files '(
+           "weld-mark-label-class.aml"
+           "Angle-marks-dashed-sign-class.aml"
+           "weld-mixin.aml"
+           "weld-2d-mixin.aml"
+           "weld-3d-mixin.aml"
+           "vertical-weld-2d-mixin.aml"
+           "vertical-weld-3d-mixin.aml"
+           "circumferential-weld-2d-mixin.aml"
+           "circumferential-weld-3d-mixin.aml"
+          
+           ;;; 2D Model Classes For Tank
+           
+           "Tank-Shell-Vertical-weld-Rollout-2D-Class.aml"
+           "Tank-Shell-Circumferential-weld-Rollout-2d-class.aml"
+           "shell-course-2d-vertical-welds-class.aml"       
+           "shell-course-2d-circumferential-welds-class.aml"
+           "shell-course-2d-welds-layout-class.aml"
+           "Shell-2d-welds-layout-class.aml"
+           "tank-welds-2d-model-class.aml"
+            
+           ;;; 3D Model Classes For Tank
+
+           "Tank-Shell-Vertical-Weld-3D-Class.aml"
+           "Tank-Shell-Circumferential-Weld-3D-Class.aml"
+           "shell-course-3d-vertical-welds-class.aml"
+           "shell-course-3d-circumferential-welds-class.aml"
+           "shell-course-3d-welds-layout-class.aml"
+           "Shell-3d-welds-layout-class.aml"
+           "tank-welds-3d-model-class.aml"
+
+           ;;; X-Ray-Plan
+
+           "weld-X-Ray-mark-class.aml"
+           "Tank-Shell-circumferential-Weld-3D-region-Class.aml"
+           "Tank-Shell-circumferential-Weld-2D-region-Class.aml"
+           "Tank-Shell-vertical-Weld-3D-region-Class.aml"
+           "Tank-Shell-vertical-Weld-2D-region-Class.aml"
+           "circumferential-3d-weld-x-ray-mark-class.aml"
+           "circumferential-2d-weld-x-ray-mark-class.aml"
+           "vertical-3d-weld-x-ray-mark-class.aml"
+           "vertical-2d-weld-x-ray-mark-class.aml"
+           "X-ray-plan-for-circumferential-2d-welds-class.aml"
+           "X-ray-plan-for-vertical-2d-welds-class.aml"
+           "X-ray-plan-for-circumferential-3d-welds-class.aml"
+           "X-ray-plan-for-vertical-3d-welds-class.aml"
+           "weld-inspections-X-Ray-2d-class.aml"
+           "weld-inspections-X-Ray-3d-class.aml"
+           "weld-inspections-3d-model-X-Ray-plan-class.aml"
+           "weld-inspections-2d-model-X-Ray-plan-class.aml"  
+           "tank-models-x-ray-plan-class.aml"       
+           
+
+           ;;; viewport-class
+           
+           "weld-map-table-class.aml"
+           "tank-weld-map-table-class.aml"
+           "tank-viewport-0-class.aml"
+           "tank-viewport-1-class.aml"
+           "tank-2d-model-xray-plan-drawing-layout-class.aml"
+           "tank-shell-rollout-drawing-layout-class.aml"
+           "tank-geometry-and-drawing-class.aml"
+           "shell-weld-map-class.aml"
+           "ametank-extra-drawings-class.aml"
+           
+
+           ;;; Main Class That Containes Models(2d & 3D) & Drawings
+           
+           "welds-data-form.aml"
+           "shell-weld-and-x-ray-maps-manager-form-class.aml"
+           "tank-shell-welds-and-x-ray-maps-manager-form-class.aml"
+           "welds-group-class.aml"
+           "welds-group-collection-class.aml"
+           "tank-shell-welds-and-x-ray-maps-manager-class.aml"
+           "welds-and-x-ray-maps-management-class.aml"
+           )
+  )

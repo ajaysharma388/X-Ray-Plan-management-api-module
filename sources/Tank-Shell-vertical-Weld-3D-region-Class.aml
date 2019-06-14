@@ -1,0 +1,62 @@
+(in-package :aml)
+
+
+(define-class Tank-Shell-vertical-Weld-3D-region-Class
+  :inherit-from(Tank-Shell-vertical-Weld-3D-Class)
+  :properties(
+              weld-source-object                    (default nil)
+              course-height                         (the course-height (:from ^weld-source-object))
+              start-angle                           (the start-angle (:from ^weld-source-object))
+              tank-od                               (the tank-od (:from ^weld-source-object))
+              point1                                (the point-1 coordinates)
+              point2                                (the point-2 coordinates)
+              weld-height                           (the weld-length (:from ^weld-source-object))
+              start-elevation                       (the start-elevation (:from ^weld-source-object))
+              std-mark                              (the std-mark (:from ^weld-source-object))
+              label                                 (format nil "~d-weld-region" ^std-mark) 
+              line-width                            1
+              weld-elvations-list                   (compute-weld-region-elevations ^weld-source-object ^start-fraction ^end-fraction)
+              weld-region-start-elevation           (nth 0 ^weld-elvations-list)
+              weld-region-end-elevation             (nth 1 ^weld-elvations-list)
+              weld-length                           (- ^weld-region-end-elevation ^weld-region-start-elevation)
+
+              (point-1 :class 'point-object
+                coordinates        (list
+                                    (* (cosd (- ^^start-angle)) (/ ^^tank-od 2))
+                                    (* (sind (- ^^start-angle)) (/ ^^tank-od 2))
+                                    (+ ^^start-elevation ^^weld-region-start-elevation) 
+                                    )
+                )
+              (point-2 :class 'point-object
+                coordinates        (list
+                                    (nth 0 (the  superior superior point-1 coordinates))
+                                    (nth 1 (the  superior superior point-1 coordinates))
+                                    (+ ^^start-elevation ^^weld-region-end-elevation)
+                                    )
+                )
+              start-fraction     (default nil)
+              end-fraction       (default nil)
+              )
+  )
+
+(define-method compute-weld-region-elevations Tank-Shell-vertical-Weld-3D-Class (start-fraction end-fraction)
+  (let* (
+         (weld-unit-size     (/ !weld-length 100))
+         )
+    (list (* weld-unit-size start-fraction 100) (* weld-unit-size end-fraction 100))   
+    )
+  )
+
+
+(define-method property-classification-list Tank-Shell-vertical-Weld-3D-region-Class ()
+  '(
+    ("Main Properties"
+     (
+      weld-source-object
+      start-fraction
+      end-fraction
+      weld-length
+      )
+     )
+    )
+  )

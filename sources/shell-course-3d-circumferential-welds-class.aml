@@ -1,0 +1,46 @@
+(in-package :aml)
+
+
+(define-class shell-course-3d-circumferential-welds-class
+  :inherit-from(series-object)
+  :properties(
+              welders                             (default nil)
+              text-height                         (default nil)
+              weld-types-list                     (default nil)
+              welders-list                        (default nil)
+              welds-size-list                     (default nil)
+              course-height                       (default nil)
+              weld-direction                      (default 'circumferential)
+              course-number                       (default nil)     
+              tank-od                             (default nil) 
+              elevation                           (default nil)         
+              course-plates-start-angles-list     (default nil)
+              series-prefix                       'circumferential-weld
+              class-expression                    'Tank-Shell-Circumferential-Weld-3D-Class
+              quantity                            (length !course-plates-start-angles-list) 
+              init-form '(
+                          tank-od                 ^^tank-od
+                          start-angle             (nth ^index ^^course-plates-start-angles-list)
+                          end-angle               (if (equal ^index (- ^quantity 1))
+                                                    (+ 360 (nth 0 ^^course-plates-start-angles-list))
+                                                    (nth (+ ^index 1) ^^course-plates-start-angles-list)
+                                                    )
+                          elevation               ^^elevation
+                          course-number           ^^course-number
+                          weld-number             ^index
+                          course-height           ^^course-height
+                          welders-list            ^^welders-list
+                          weld-size               (get-random-weld-size ^^welds-size-list)
+                          text-height             ^^^text-height
+                          welds-size-list         ^^^welds-size-list
+                          welders                 ^^^welders
+                          )                    
+              )
+  )
+
+
+(defun get-random-weld-size (welds-size-list)
+  (nth (random (length welds-size-list)) welds-size-list)  
+  )
+
+

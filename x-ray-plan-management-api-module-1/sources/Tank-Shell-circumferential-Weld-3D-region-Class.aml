@@ -1,0 +1,47 @@
+(in-package :aml)
+
+
+(define-class Tank-Shell-Circumferential-Weld-3D-region-Class
+  :inherit-from(Tank-Shell-Circumferential-Weld-3D-Class)
+  :properties(
+              weld-source-object      (default nil)
+              course-height           (the course-height (:from ^weld-source-object))
+              weld-type               (the weld-type (:from ^weld-source-object))
+              radius                  (the radius (:from ^weld-source-object))
+              std-mark                (the std-mark (:from ^weld-source-object))
+              label                   (format nil "~d-weld-region" ^std-mark)
+              start-fraction          (default nil)
+              end-fraction            (default nil)
+              elevation               (the elevation (:from ^weld-source-object))
+              line-width              1
+              start-end-angles-list   (compute-weld-region-angles ^weld-source-object ^start-fraction ^end-fraction)
+              start-angle             (nth 0 ^start-end-angles-list)
+              end-angle               (nth 1 ^start-end-angles-list)
+              start-position          (the point-1 (:from ^weld-source-object))
+              end-position            (the point-2 (:from ^weld-source-object))
+              orientation             (list 
+                                       (translate 
+                                        (list 0 0 
+                                          (- 
+                                           (the elevation (:from ^weld-source-object))))) 
+                                       (rotate 180.0 
+                                         '(1 0 0)))
+              )
+  )
+
+(define-method compute-weld-region-angles Tank-Shell-Circumferential-Weld-3D-Class (start-fraction end-fraction)
+  (list (+ !start-angle (* (- !end-angle !start-angle) start-fraction)) (+ !start-angle (* (- !end-angle !start-angle) end-fraction)))
+  )
+
+(define-method property-classification-list Tank-Shell-Circumferential-Weld-3D-region-Class ()
+  '(
+    ("Main Properties"
+     (
+      weld-source-object
+      start-fraction
+      end-fraction
+      weld-length
+      )
+     )
+    )
+  )

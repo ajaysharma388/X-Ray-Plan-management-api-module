@@ -1,0 +1,96 @@
+(in-package :aml)
+
+(define-class vertical-2d-weld-x-ray-mark-class
+  :inherit-from(weld-x-ray-mark-class)
+  :properties(
+              welds-objects-list          (default nil)
+              color                       (default nil)
+              label                       (format nil "~d-X-ray" (trace-from ^weld-object !std-mark))              
+              (weld-object :class 'option-property-class
+                label "Select Weld for X-Ray"
+                options-list (loop
+                               for weld-group in ^welds-objects-list
+                               do
+                               collect (first weld-group)
+                               )
+                labels-list (loop
+                              for weld-group in ^welds-objects-list
+                              do
+                              collect (the std-mark (:from (nth 0 weld-group)))
+                              )
+                formula (nth 0 (first ^welds-objects-list))
+                mode 'menu
+                )
+              x-ray-location                (default 50)
+              current-weld-object-position  (nth (contains-object ^welds-objects-list ^weld-object) ^welds-objects-list)
+              mid-point         (let* (
+                                       (temp-0 (* (the weld-length (:from ^weld-object)) (nth 3 ^current-weld-object-position)))
+                                       (temp-1 (* (the weld-length (:from ^weld-object)) (nth 4 ^current-weld-object-position)))
+                                       (mean    (* (- temp-1 temp-0) (/ (the superior x-ray-location) 100)))
+                                       )
+                                  (list
+                                   (* (/ ^^tank-od -2) (degrees-to-radians (the start-angle (:from ^weld-object))))
+                                   (+ temp-0 (the start-elevation (:from ^weld-object)) mean)
+                                   0
+                                   )
+                                  )
+              orientation       (if (equal ^X-ray-type "vertical-2-point-inspection")
+                                  (list
+                                   (rotate 90 '(0 0 1))
+                                   (translate
+                                    ^mid-point
+                                    )
+                                   )
+                                  (list
+                                   (translate 
+                                    (list (-
+                                           (*
+                                            (degrees-to-radians
+                                             (the start-angle (:from ^weld-object))
+                                             )
+                                            (/
+                                             ^^tank-od
+                                             2
+                                             )
+                                            )
+                                           )
+                                      (nth 2 (the point1 (:from ^weld-object)))
+                                      0
+                                      ) 
+                                    )
+                                   )                                              
+                                  )
+              )
+  :subobjects(
+              (group-welds :class 'group-object
+                object-list (children ^^welds-regions)
+                )
+              (welds-regions :class 'series-object
+                class-expression 'Tank-Shell-vertical-Weld-2D-region-Class
+                quantity (length ^^welds-objects-list)
+                init-form '(
+                            weld-source-object (first (nth ^index ^^^welds-objects-list))
+                            mid-point          ^^mid-point
+                            start-fraction     (nth 3 (nth ^index ^^^welds-objects-list))
+                            end-fraction       (nth 4 (nth ^index ^^^welds-objects-list))                               
+                            )
+                )
+              )
+  )
+
+(defun contains-object (list weld)
+  (loop
+    with counter = 0
+    for list-in in list
+    do
+    (if (equal weld (first list-in))
+      (return counter)
+      (setf counter (+ counter 1)) 
+      )
+    )
+  )
+
+
+
+
+

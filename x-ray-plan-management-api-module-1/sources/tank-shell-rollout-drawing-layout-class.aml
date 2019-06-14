@@ -1,0 +1,33 @@
+(in-package :aml) 
+
+(define-class tank-shell-rollout-drawing-layout-class
+  :inherit-from (drawing-layout-class)
+  :properties (
+               drawings-text-height                                (default nil) 
+               vertical-welds-list                                 (default nil)
+               circumferential-welds-list                          (default nil)
+               welds-list                                          (deafult nil)
+               tank-od                                             (default nil)
+               geometry-source-object                              (default nil)
+               angle-mark                                          (default nil)
+               control-points-source                               (default nil);;added
+               viewport-0-objects-to-fit-within-limits-list        (default nil)
+               viewport-0-objects-to-include-list		             (default nil)              
+               viewports-percent-size-list                         nil
+               viewports-scale-factor-list                         '(1 20)
+               paper-size                                          '(11 17)
+               paper-orientation	                                  'landscape
+               ;; internal properties
+               paper-dim-list                                      ^paper-size
+               viewports-inheritance-list                          '(tank-viewport-0-class)
+               dimensions-inheritance-list                         '(tank-weld-map-table-class)
+               ;; Required by the coil-dimensions-class
+               viewport-0-object                                   (the superior viewports-objects viewport-0)              
+               
+               )
+  :subobjects(
+              (Table :class 'weld-map-table-class
+                
+                )      
+              )
+  )

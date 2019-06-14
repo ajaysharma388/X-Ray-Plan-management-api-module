@@ -1,0 +1,106 @@
+(in-package :aml)
+
+(define-class circumferential-2d-weld-x-ray-mark-class
+  :inherit-from(weld-x-ray-mark-class)
+  :properties(
+              welds-objects-list          (default nil)
+              color                       (default nil)
+              label                       (format nil "~d-X-ray" (trace-from ^weld-object !std-mark))
+              (weld-object :class 'option-property-class
+                label "Select Weld for X-Ray"
+                options-list (loop
+                              for weld-group in ^welds-objects-list
+                              do
+                              collect (first weld-group)
+                              )
+                labels-list (loop
+                              for weld-group in ^welds-objects-list
+                              do
+                              collect (the std-mark (:from (nth 0 weld-group)))
+                              )
+                formula (nth 0 (first ^welds-objects-list))
+                mode 'menu
+                )
+              x-ray-location                (default 50)
+              current-weld-object-position  (nth (contains-object ^welds-objects-list ^weld-object) ^welds-objects-list)
+              weld-start-region-fraction    (nth 3 ^current-weld-object-position)
+              weld-end-region-fraction      (nth 4 ^current-weld-object-position)
+              mid-angle                   (let* 
+                                              ((end 
+                                                (the end-angle 
+                                                  (:from 
+                                                   (the superior weld-object)))) 
+                                               (start 
+                                                (the start-angle 
+                                                  (:from 
+                                                   (the superior weld-object)))) 
+                                               (angle 
+                                                (- end start)) 
+                                               (start-angle 
+                                                (* 
+                                                 (nth 3 
+                                                   (the superior current-weld-object-position)) angle)) 
+                                               (end-angle 
+                                                (* 
+                                                 (nth 4 
+                                                   (the superior current-weld-object-position)) angle))) 
+                                            (+ (* 
+                                             (/ 
+                                              (- end-angle start-angle) 100) 
+                                             (the superior x-ray-location)) start-angle)
+                                            )
+              orientation                   (list
+                                             (translate
+                                              (list
+                                               (* (/ ^^tank-od -2) (degrees-to-radians (+ ^mid-angle (the start-angle (:from ^weld-object)))))
+                                               (the elevation (:from ^weld-object))
+                                               0
+                                               )
+                                              )
+                                             )
+              )
+  :subobjects(
+              (group-welds :class 'group-object
+                object-list (children ^^welds-regions)
+                )
+              (welds-regions :class 'series-object
+                class-expression 'Tank-Shell-circumferential-Weld-2D-region-Class
+                quantity (length ^^welds-objects-list)
+                init-form '(
+                            weld-source-object (first (nth ^index ^^^welds-objects-list))
+                            start-fraction     (nth 3 (nth ^index ^^^welds-objects-list))
+                            end-fraction       (nth 4 (nth ^index ^^^welds-objects-list))
+                            color              ^^^color
+                            )
+                )
+              )
+  )
+
+
+
+(defun contains-object (list weld)
+  (loop
+    with counter = 0
+    for list-in in list
+    do
+    (if (equal weld (first list-in))
+      (return counter)
+      (setf counter (+ counter 1)) 
+      )
+    )
+  )
+
+
+;;; (let*
+;;;                                                 (
+;;;                                                  (angle    (-
+;;;                                                             (the end-angle (:from (the superior weld-object)))
+;;;                                                             (the start-angle (:from (the superior weld-object)))
+;;;                                                             )
+;;;                                                    )
+;;;                                                  )
+;;;                                               (+
+;;;                                                (* angle (nth 3 ^current-weld-object-position))
+;;;                                                (* angle (nth 4 ^current-weld-object-position))
+;;;                                                )
+;;;                                                )

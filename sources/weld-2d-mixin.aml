@@ -1,0 +1,11 @@
+(in-package :aml)
+
+
+(define-class weld-2d-mixin
+  :inherit-from(weld-mixin)
+  :properties(
+              weld-source-object      (default nil)
+              )
+  )
+
+

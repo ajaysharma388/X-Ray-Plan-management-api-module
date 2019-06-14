@@ -1,0 +1,118 @@
+(in-package :aml)
+
+(define-class vertical-3d-weld-x-ray-mark-class
+  :inherit-from(weld-X-Ray-mark-class)
+  :properties(
+              welds-objects-list                        (default nil)
+              label                                     (format nil "~d-X-ray" (trace-from ^weld-object !std-mark))
+              x-ray-sheet-width                         (default nil)
+              x-ray-sheet-height                        (default nil)
+              (weld-object :class 'option-property-class
+                label "Select Weld for X-Ray"
+                options-list (loop
+                               for list in ^^welds-objects-list
+                               do
+                               collect (first list)
+                               )
+                labels-list (loop
+                              for weld-group in ^welds-objects-list
+                              do
+                              collect (the std-mark (:from (first weld-group)))
+                              )
+                mode 'menu
+                formula (first (first ^welds-objects-list))
+                )
+              x-ray-location     (default 50)
+              current-weld-object-position (nth (contains-object ^welds-objects-list ^weld-object) ^welds-objects-list)
+              mid-point          (let* (
+                                          (temp-0 (* (the weld-length (:from ^weld-object)) (nth 3 ^current-weld-object-position)))
+                                          (temp-1 (* (the weld-length (:from ^weld-object)) (nth 4 ^current-weld-object-position)))
+                                          (mean    (* (- temp-1 temp-0) (/ (the superior x-ray-location) 100)))
+                                          )
+                                     (list
+                                      (nth 0 (the point1 (:from ^weld-object)))
+                                      (nth 1 (the point1 (:from ^weld-object)))
+                                      (+ (the start-elevation (:from ^weld-object)) mean temp-0)
+                                      )
+                                     )
+              orientation        (if (equal ^^X-ray-type "vertical-2-point-inspection")
+                                   (list 
+                                    (align 
+                                     '(0 0 0) 
+                                     '(0 0 1) 
+                                     '(1 0 0) 
+                                     ^mid-point
+                                     (list (nth 0 ^mid-point)
+                                       (nth 1 ^mid-point)
+                                       0
+                                       )
+                                     '(1 0 0) :move? t :align? t :orient? nil)
+                                    )
+                                   (list 
+                                    (rotate 90 
+                                      '(0 0 1)) 
+                                    (align 
+                                     '(0 0 0) 
+                                     '(0 0 1) 
+                                     '(1 0 0) 
+                                     (the point1 (:from ^weld-object)) 
+                                     (list 
+                                      (nth 0 
+                                        (the point1 (:from ^weld-object)) ) 
+                                      (nth 1 
+                                        (the point1 (:from ^weld-object))) 0) 
+                                     '(1 0 0) :move? t :align? t :orient? nil))
+                                   )
+              )
+  :subobjects (
+               (group-welds :class 'group-object
+                 object-list (children ^^welds-regions)
+                 )
+               (welds-regions :class 'series-object
+                 class-expression 'Tank-Shell-vertical-Weld-3D-region-Class
+                 quantity (length ^^welds-objects-list)
+                 init-form '(
+                             weld-source-object (first (nth ^index ^^^welds-objects-list))
+                             start-fraction     (nth 3 (nth ^index ^^^welds-objects-list))
+                             end-fraction       (nth 4 (nth ^index ^^^welds-objects-list))                               
+                             )
+                 )
+               )
+  )
+
+(defun contains-object (list weld)
+  (loop
+    with counter = 0
+    for list-in in list
+    do
+    (if (equal weld (first list-in))
+      (return counter)
+      (setf counter (+ counter 1)) 
+      )
+    )
+  )
+
+
+
+
+
+
+;;;        (let* (
+;;;                                           (point1  (list
+;;;                                                     (nth 0 (the point1 (:from ^weld-object)))
+;;;                                                     (nth 1 (the point1 (:from ^weld-object)))
+;;;                                                     (+ (nth 2 (the point1 (:from ^weld-object))) (* (the weld-length (:from ^weld-object)) (nth 3 ^current-weld-object-position)))
+;;;                                                     )
+;;;                                             )
+;;;                                           
+;;;                                           (point2  (list
+;;;                                                     (nth 0 (the point1 (:from ^weld-object)))
+;;;                                                     (nth 1 (the point1 (:from ^weld-object)))
+;;;                                                     (+ (nth 2 (the point1 (:from ^weld-object))) (* (the weld-length (:from ^weld-object)) (nth 4 ^current-weld-object-position)))
+;;;                                                     )
+;;;                                             )
+;;;                                           
+;;;                                           (mid-pt  (mid-point  point2 point1))
+;;;                                           )
+                                     
+;;;                                      )

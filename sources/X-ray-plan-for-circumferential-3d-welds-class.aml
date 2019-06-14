@@ -1,0 +1,18 @@
+(in-package :aml)
+
+
+(define-class X-ray-plan-for-circumferential-3d-welds-class
+  :inherit-from(series-object)
+  :properties(
+              label                                     (default nil)
+              circumferential-welds-list                (default nil)
+              x-ray-sheet-width                         (default nil)
+              x-ray-sheet-height                        (default nil)
+              class-expression                          'circumferential-3d-weld-x-ray-mark-class
+              quantity                                  (length ^circumferential-welds-list)
+              init-form '(
+                          welds-objects-list            (nth ^index ^^circumferential-welds-list)
+                          color                         (generate-random-color '("red" "blue" "black"))
+                          )
+              )
+  )

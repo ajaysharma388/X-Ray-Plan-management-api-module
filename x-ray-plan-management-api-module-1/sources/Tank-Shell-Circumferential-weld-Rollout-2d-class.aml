@@ -1,0 +1,81 @@
+(in-package :aml)
+
+(define-class Tank-Shell-Circumferential-weld-Rollout-2d-class
+  :inherit-from(line-object circumferential-weld-2d-mixin)
+  :properties(
+              weld-source-object             (default nil)
+              tank-od                        (the tank-od  (:from ^weld-source-object :error nil :relation nil))
+              std-mark                       (the std-mark  (:from ^weld-source-object :error nil :relation nil))
+              weld-length                    (the weld-length (:from ^weld-source-object :error nil :relation nil))                  
+              color                          (the color (:from ^weld-source-object :error nil :relation nil))
+              elevation                      (the elevation (:from ^weld-source-object :error nil :relation nil))
+              welder-name                    (the welder-name (:from ^weld-source-object :error nil :relation nil))
+              line-width                     (the line-width (:from ^weld-source-object :error nil :relation nil))
+              text-height                    (the text-height (:from ^weld-source-object :error nil :relation nil))
+              point1                         (the superior point-0-coords coordinates)
+              point2                         (the superior point-1-coords coordinates)
+              start-angle                    (the start-angle (:from ^weld-source-object :error nil :relation nil))
+              x-coordinate-start-position    (- (* (/ ^tank-od 2) (degrees-to-radians ^start-angle)))
+              (point-0-coords :class 'point-object
+                coordinates (list ^x-coordinate-start-position ^elevation 0) 
+                )
+              (point-1-coords :class 'point-object
+                coordinates (list (- ^x-coordinate-start-position ^weld-length) ^elevation 0) 
+                )
+              )
+  :subobjects(
+              (mark-label :class 'weld-mark-label-class
+                text-string        ^^std-mark
+                height             ^^text-height
+                color              "cyan"
+                line-width         ^^line-width 
+                origin-coords      (mid-point (the superior superior point-0-coords coordinates) (the superior superior point-1-coords coordinates))
+                orientation        (list 
+                                    (translate
+                                     (list 
+                                      0
+                                      (/ (the superior height) 1.5)
+                                      0
+                                      )
+                                     )
+                                    )
+                )
+              )
+  )
+
+
+
+
+(define-method property-classification-list  Tank-Shell-Circumferential-weld-Rollout-2d-class()
+  (list
+   (list
+    "Main Properties"
+    (append
+     (get-weld-properties-classification-list !weld-source-object)
+     '(
+       ("Zoom" (
+                button1-parameters '(zoom-object (the))
+                button3-parameters '(zoom 'all)
+                size '(1 0.33)
+                )
+        ui-work-area-action-button-class     
+        )
+       ("Blink" (
+                 button1-parameters '(blink (the))
+                 button3-parameters '()
+                 size '(1 0.33)
+                 )
+        ui-work-area-action-button-class
+        )
+       ("highlight" (
+                     button1-parameters '(highlight-selected-object  (list (the)) (list "green") (list 5) 3)
+                     button3-parameters '(highlight-selected-object  (list (the)) (list "white") (list 0) 3)
+                     size '(1 0.34)
+                     )
+        ui-work-area-action-button-class
+        )
+       )
+     )
+    )
+   )
+  )

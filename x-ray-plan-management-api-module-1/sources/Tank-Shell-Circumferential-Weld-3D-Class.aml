@@ -1,0 +1,130 @@
+(in-package :aml)
+
+
+(define-class Tank-Shell-Circumferential-Weld-3D-Class
+  :inherit-from(arc-ctr-radius-sta-enda circumferential-weld-3d-mixin)
+  :properties(
+              welders                           (default nil)
+              welders-inside-outside            (default nil)
+              text-height                       (default nil)
+              course-height                     (default nil)
+              (weld-length :class 'computed-data-property-class
+                label                  "Weld Length"
+                formula                (* ^radius (degrees-to-radians (- ^end-angle ^start-angle)))
+                )
+              (weld-type :class 'option-property-class
+                formula                (first ^^weld-types-list)
+                label                  "Weld Type"
+                options-list           ^^weld-types-list
+                mode                   'menu
+                )
+              (welder-inside :class 'option-property-class
+                formula                (nth 0  ^welders-inside-outside)
+                label                  "Welder Inside"
+                options-list           ^^welders
+                mode                   'menu
+                )
+              (welder-outside :class 'option-property-class
+                formula                (nth 1 ^welders-inside-outside)
+                label                  "Welder Outside"
+                options-list           ^welders
+                mode                   'menu
+                )
+              radius                   (/ ^tank-od 2)
+              color                    (default "sky blue")
+              line-width               (* 0.1 ^text-height)
+              orientation              (list 
+                                        (translate
+                                         (list
+                                          0
+                                          0
+                                          (-  ^elevation)
+                                          )
+                                         ) 
+                                        (rotate 180.0 '(1 0 0))
+                                        )
+              point-1                  (list (* ^radius (cosd ^start-angle)) 0 (* ^radius (sind ^start-angle)))
+              point-2                  (list (* ^radius (cosd ^end-angle)) 0 (* ^radius (sind ^end-angle)))
+              mid-angle                (/ (+ ^start-angle ^end-angle) 2)
+              )
+  :subobjects(
+              (mark-label :class 'weld-mark-label-class
+                text-string        ^^std-mark
+                color              "cyan"
+                line-width         (* 0.1 ^^text-height)
+                direction-coords   (list
+                                    (- (nth 0  ^^point-1) (nth 0 ^^point-2))
+                                    (- (nth 1  ^^point-1) (nth 1 ^^point-2))
+                                    (- (nth 2  ^^point-1) (nth 2 ^^point-2))
+                                    )
+                height             ^^text-height
+                text-height        !height
+                origin-coords      (list (* ^^radius (cosd ^^mid-angle)) 0 (* ^^radius (sind ^^mid-angle)))
+                orientation        (list 
+                                    (rotate 90.0 '(1 0 0)) 
+                                    (translate (list
+                                                0
+                                                0
+                                                (+ 
+                                                 (/ 
+                                                  (the superior height) 1.5) 
+                                                 (the superior superior elevation)
+                                                 )
+                                                )
+                                      )
+                                    )
+                normal-vector       (let* 
+                                        ((coords 
+                                          (the superior origin-coords))) 
+                                      (list 
+                                       (nth 0 coords) 0 
+                                       (nth 2 coords)))
+                )
+              )
+  )
+
+
+(define-method get-weld-properties-classification-list Tank-Shell-Circumferential-Weld-3D-Class ()
+  (list
+   (the std-mark self)
+   (list (the weld-size self) '(label "Weld Size"))
+   (list (the weld-length self) '(label "Weld Length"))
+   (the weld-type self)
+   (the welder-inside self)
+   (the welder-outside self)
+   )
+  )
+
+(define-method property-classification-list  Tank-Shell-Circumferential-Weld-3D-Class()
+  (list
+   (list
+    "Main Properties"
+    (append
+     (get-weld-properties-classification-list self)
+     '(
+       ("Zoom" (
+                button1-parameters '(zoom-object (the))
+                button3-parameters '(zoom 'all)
+                size '(1 0.33)
+                )
+        ui-work-area-action-button-class     
+        )
+       ("Blink" (
+                 button1-parameters '(blink (the))
+                 button3-parameters '()
+                 size '(1 0.33)
+                 )
+        ui-work-area-action-button-class
+        )
+       ("highlight" (
+                     button1-parameters '(highlight-selected-object  (list (the)) (list "green") (list 5) 3)
+                     button3-parameters '(highlight-selected-object  (list (the)) (list "white") (list 0) 3)
+                     size '(1 0.34)
+                     )
+        ui-work-area-action-button-class
+        )
+       )
+     )
+    )
+   )
+  )

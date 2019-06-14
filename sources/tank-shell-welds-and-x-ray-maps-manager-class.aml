@@ -1,0 +1,620 @@
+(in-package :aml)
+
+
+;;;  create module method for the project
+;;; (create-module "tank-shell-welds-and-x-ray-maps-manager-module" "2019.04.05.1" (list :X-Ray-Plan-management-api-module) '(1))
+
+;;;  compile-system method call for the compilation of the code
+;;; (compile-system :X-Ray-Plan-management-api-module :force? t :forget? t :all? t)
+
+
+(define-class tank-shell-welds-and-x-ray-maps-manager-class
+  :inherit-from(object)
+  :properties(
+              welders                                          (default '("Ajay" "Diptish" "Ankush" "Nikhil" "Anmol" "Pranjal"))  
+              welders-inside-outside-list                      (welder-pair ^welders)      ;;;; name of the welder.
+              welders-list                                     (permutation-of-welders (the superior) ^welders)
+              welds-size-list                                  (default '(A B C D E F))      ;;;; weld size.
+              weld-types-list                                  (default '(smaw gmaw/mig fcaw gtaw/tig))  ;;;; weld type example : (list Tig Mig)
+              tank-od                                          (default 1620.625)
+              center                                           (default '(0 0 0)) 
+              courses-height-list                              (default '(96 96 96 96 93.0))
+              courses-plates-start-angles-list                 (default '(
+                                                                          (0.0 32.72727272727272 65.45454545454544 98.18181818181816 130.90909090909088 163.6363636363636 196.36363636363632 229.09090909090904 261.81818181818176 294.5454545454545 327.27272727272725) 
+                                                                          (-10.909090909090908 21.818181818181813 54.54545454545453 87.27272727272725 119.99999999999997 152.7272727272727 185.4545454545454 218.18181818181813 250.90909090909085 283.63636363636357 316.3636363636363)
+                                                                          (-21.818181818181817 10.909090909090903 43.636363636363626 76.36363636363635 109.09090909090907 141.81818181818178 174.5454545454545 207.27272727272722 239.99999999999994 272.72727272727263 305.4545454545454) 
+                                                                          (-32.72727272727273 -7.105427357601002E-15 32.72727272727271 65.45454545454544 98.18181818181816 130.90909090909088 163.6363636363636 196.36363636363632 229.09090909090904 261.81818181818176 294.5454545454545) 
+                                                                          (-43.63636363636363 -10.909090909090914 21.818181818181806 54.545454545454525 87.27272727272725 119.99999999999997 152.7272727272727 185.4545454545454 218.18181818181813 250.90909090909085 283.63636363636357)
+                                                                          )
+                                                                 )
+              x-ray-sheet-width                                (default 10)
+              x-ray-sheet-height                               (default 6)
+              circumferential-x-ray-plan-min-size              (default 120)
+              circumferential-x-ray-plan-max-size              (default 1200)
+              vertical-x-ray-plan-min-size                     (default 120)
+              vertical-x-ray-plan-max-size                     (default 1200)
+              text-height                                      (default 10)
+              vertical-welds-hash-table                        (let* 
+                                                                   (
+                                                                    (table (make-hash-table))
+                                                                    ) 
+                                                                 (loop 
+                                                                   for w in (the superior vertical-welds-list) 
+                                                                   do 
+                                                                   (setf (gethash 
+                                                                          (the std-mark 
+                                                                            (:from w)) table) w)) table)
+              circumferential-welds-hash-table                 (let* 
+                                                                   ((table 
+                                                                     (make-hash-table))) 
+                                                                 (loop 
+                                                                   for w in (the superior circumferential-welds-list) 
+                                                                   do 
+                                                                   (setf 
+                                                                    (gethash 
+                                                                     (the std-mark 
+                                                                       (:from w)) table) w)) table)
+              ;;;; List for the bom.
+              vertical-welds-list                              (vertical-welds-collection-for-bom (the superior))
+              circumferential-welds-list                       (circumferential-welds-collection-for-bom (the superior))
+
+              ;;;; grouping the welds.
+              vertical-plan-list                               (group-welds-for-each-welder (the superior) ^vertical-welds-by-size-list)  
+              circumferential-plan-list                        (group-welds-for-each-welder (the superior) ^circumferential-welds-by-size-list)
+
+              circumferential-welds-by-size-list               (get-welds-list (the superior) ^welds-size-list ^circumferential-welds-list)
+              vertical-welds-by-size-list                      (get-welds-list (the superior)  ^welds-size-list ^vertical-welds-list) 
+              
+              circumferential-welds-List-For-X-ray-plan        (group-welds-by-x-ray-weld-length (the superior) ^circumferential-plan-list ^circumferential-x-ray-plan-min-size ^circumferential-x-ray-plan-max-size)
+              vertical-welds-List-For-X-ray-plan               (group-welds-by-x-ray-weld-length (the superior) ^vertical-plan-list ^vertical-x-ray-plan-min-size ^vertical-x-ray-plan-max-size)
+
+              x-ray-plan-group-for-circumferential-welds       (x-ray-plan-group-collection-method (the superior) ^circumferential-welds-List-For-X-ray-plan) 
+              x-ray-plan-group-for-vertical-welds              (x-ray-plan-group-collection-method (the superior) ^vertical-welds-List-For-X-ray-plan) 
+
+              (tank-coordinate-system :class coordinate-system-class
+                origin '(0 0 0)                                                                                          ;;;; tank reference coordinate system
+                length (/ ^^tank-od 5)                 
+                )    
+              
+              welds-object-list-0                                (children-collection-method (the superior))   ;;; contains all the objects which are going to be a part of viewport.
+              welds-object-list-1                                (xray-plan-children-collection-method  (the superior)) 
+              Angle-marks                                        (mark-collection-method (the superior))
+              (vertical-welds-editable-form :class 'multiple-objects-work-area-editor-property-class
+                form-label    "Vertical Welds Form"
+                list-objects ^vertical-welds-list
+                transpose? t
+                form-width (* 155 (length ^list-properties-names))
+                objects-column-width 200
+                properties-labels-width 100
+                list-properties-names '(std-mark welder-inside welder-outside weld-type weld-length weld-size)
+                list-properties-labels (loop for name in ^list-properties-names collect (write-to-string name))
+                )
+              (circumferential-welds-editable-form :class 'multiple-objects-work-area-editor-property-class
+                form-label    "Circumferential Welds Form"
+                list-objects ^circumferential-welds-list
+                transpose? t
+                form-width (* 155 (length ^list-properties-names))
+                objects-column-width 200
+                properties-labels-width 100
+                list-properties-names '(std-mark welder-inside welder-outside weld-type weld-length weld-size)
+                list-properties-labels (loop for name in ^list-properties-names collect (write-to-string name))
+                )                
+              )
+  :subobjects(
+              (3D-Model :class 'tank-welds-3d-model-class
+                text-height                        ^^text-height
+                welders                            ^^welders
+                welders-inside-outside-list        ^^welders-inside-outside-list
+                )
+              (2D-Model :class 'tank-welds-2d-model-class
+                  ;;; 2d-model of the tank
+                courses-plates-start-angles-list   ^^courses-plates-start-angles-list 
+                vertical-welds-hash-table          ^^vertical-welds-hash-table
+                circumferential-welds-hash-table   ^^circumferential-welds-hash-table
+                welders-inside-outside-list        ^^welders-inside-outside-list
+                )
+              (x-ray-plan :class 'tank-models-X-ray-plan-class
+                circumferential-welds-List-For-X-ray-plan    ^^circumferential-welds-List-For-X-ray-plan
+                vertical-welds-List-For-X-ray-plan           ^^vertical-welds-List-For-X-ray-plan
+                welders-list                                 ^^welders-list
+                tank-od                                      ^^tank-od
+                x-ray-sheet-width                            ^^x-ray-sheet-width   
+                x-ray-sheet-height                           ^^x-ray-sheet-height
+                courses-height-list                          ^^courses-height-list
+                )
+              )
+  )
+
+
+(define-method property-classification-list    tank-shell-welds-and-x-ray-maps-manager-class ()
+  '(
+    ("Main Properties"
+     (
+      "Tank Data"
+      (courses-height-list                                     (label "Couses Height List"))
+      (X-Ray-Plan-size                                         (label "Plan Size"))  
+      (courses-plates-start-angles-list                        (label "Start Angles For Plates"))
+      (tank-od                                                 (label "Tank Diameter"))
+      (welders-list                                            (label "Welders List"))    
+      (welds-size-list                                         (label "Weld Size List")) 
+      (weld-types-list                                         (label "Weld Types List"))
+      circumferential-x-ray-plan-min-size
+      circumferential-x-ray-plan-max-size
+      vertical-x-ray-plan-min-size
+      vertical-x-ray-plan-max-size
+      vertical-welds-editable-form
+      circumferential-welds-editable-form
+      )
+     )
+    )
+  )
+
+
+(define-method post-edit-node-method tank-shell-welds-and-x-ray-maps-manager-class ()
+  (display-tank-shell-welds-and-x-ray-maps-manager-form
+   self
+   )
+  )
+
+(defun display-tank-shell-welds-and-x-ray-maps-manager-form (tank-object
+                                                             &key
+                                                             (new? t)
+                                                             )
+  (let* (
+         ;; Note a "add-form"
+         (form (display-form 'tank-object-form
+                 :class 'tank-shell-welds-and-x-ray-maps-manager-form-class
+                 :new? new?
+                 )
+           )
+         )
+
+    (when form
+      (change-formula (the selected-tank-object self (:from form))
+        (append
+         (find-the-trace
+          tank-object
+          :from (the selected-tank-object self (:from form))
+          )
+         '((:error nil :relation nil))
+         )
+        )
+      (update form)
+      )
+    form
+    )
+  )
+
+;;; function to collect the circumferential-welds & vertical-welds.
+
+(define-method get-welds-list  tank-shell-welds-and-x-ray-maps-manager-class (welds-size-list welds-input-list)
+  (let*(
+        welds-list 
+        welds-collection
+        welds-collection-main
+        list
+        )
+    (loop
+      for size in welds-size-list
+      do
+      (loop
+        for welder in !welders-list
+        do
+        (loop
+          for weld in welds-input-list
+          do
+          (trace-from weld
+            (if (and (equal welder !welder-name) (equal size !weld-size) (< !course-number (length !courses-height-list)))
+              (setf welds-list (append welds-list (list weld)))
+              )
+            )
+          )
+        (if (< 0 (length welds-list))
+          (setf welds-list (append (list welder) (list welds-list)))
+          )
+        (setf welds-collection (append welds-collection (list welds-list)))
+        (setf welds-list '())
+        )
+      (setf list (append (list size) (list welds-collection)))
+      (setf welds-collection-main (append welds-collection-main (list list)))
+      (setf welds-collection '())
+      (setf list '())
+      )   
+    (weld-from-welder welds-collection-main !welders-list)
+    )
+  )
+
+(defun weld-from-welder (welds-collection welders-list)
+  (let*(
+        list-0
+        list-1
+        )
+    (loop
+      for i from 0 to (- (length welders-list) 1)
+      do
+      (loop
+        for group in welds-collection
+        do
+        (setf list-0 (append list-0 (list (second (nth i (second group))))))
+        )
+      (setf list-1 (append list-1 (list list-0)))
+      (setf list-0 '())
+      )
+    list-1
+    )
+  )
+
+
+
+;;;; collecting welds for the each welder.
+
+
+(define-method group-welds-for-each-welder tank-shell-welds-and-x-ray-maps-manager-class (welds-by-size-list)
+  (let*
+      (
+       (list '())
+       (list-collection '())
+       )
+    (loop
+      for collection-list in welds-by-size-list
+      do
+      (loop
+        for welds in collection-list
+        do
+        (setf list (append list (if (check welds)
+                                  welds
+                                  )
+                     )
+          )
+        )
+      (setf list-collection (append list-collection (list list)))
+      (setf list '())
+      )
+    list-collection
+    )
+  )
+
+(defun check (element)
+  (if (equal nil element)
+    nil
+    t
+    )
+  )
+ 
+;;; collect all childs for the viewport object-list.   
+
+(define-method children-collection-method  tank-shell-welds-and-x-ray-maps-manager-class  ()
+  (let*(
+        )
+    (loop
+      for weld in (select-object
+                   :from (the 2D-Model)
+                   :class 'weld-mixin
+                   )
+      do
+      collect weld
+      )
+    )
+  )
+
+
+(define-method xray-plan-children-collection-method  tank-shell-welds-and-x-ray-maps-manager-class  ()
+  (let*(
+        )
+    (loop
+      for weld in (select-object
+                   :from (the x-ray-plan X-Rays-plans-2d-model)
+                   :class 'sheet-class
+                   )
+      do
+      collect weld
+      )
+    )
+  )
+
+
+;;; ---------------------------------------------------------------------------------------------------
+;;; collection-method for bill of material.
+
+(define-method circumferential-welds-collection-for-bom  tank-shell-welds-and-x-ray-maps-manager-class ()
+  (let*(
+        welds-list
+        )
+    (loop
+      for weld in (select-object
+                   :from (the 3D-Model)
+                   :class 'circumferential-weld-3d-mixin
+                   )
+      do
+      (trace-from weld
+        (if (< !course-number (length !courses-height-list))
+          (setf welds-list (append welds-list (list weld)))
+          )
+        )
+      )
+    (sort welds-list 'sort-welds-sequence-for-bom) 
+    welds-list
+    )
+  )
+
+(define-method vertical-welds-collection-for-bom  tank-shell-welds-and-x-ray-maps-manager-class ()
+  (let*(
+        welds-list
+        )
+    (loop
+      for weld in (select-object
+                   :from (the 3D-Model)
+                   :class 'vertical-weld-3d-mixin
+                   )
+      do
+      (setf welds-list (append welds-list (list weld)))
+      )
+    (sort welds-list 'sort-welds-sequence-for-bom) 
+    welds-list
+    )
+  )
+
+
+(defun sort-welds-sequence-for-bom (object-1 object-2)
+  (if (< (trace-from object-1 !course-number) (trace-from object-2 !course-number))
+    t
+    (if (> (trace-from object-1 !course-number) (trace-from object-2 !course-number))
+      nil
+      (if (< (trace-from object-1 !weld-number) (trace-from object-2 !weld-number))
+        t
+        nil
+        )
+      )
+    )
+  )
+
+;;; collecting all the angle-marks for viewport object-list.
+
+(define-method mark-collection-method  tank-shell-welds-and-x-ray-maps-manager-class ()
+  (let*(
+        )
+    (loop
+      for mark in (select-object
+                   :from (the 2D-Model)
+                   :class 'Angle-marks-dashed-sign-class
+                   )
+      do
+      collect mark
+      )
+    )
+  )
+
+
+;;; Method to Generate the plan on the basis of the welds references.
+
+
+(defun generate-xray-plan-group (sorted-welds-list size-1 size-2)
+  (loop
+    with all-lists = nil
+    with temp-list = nil
+    with current-length = 0
+    with target-length = size-1
+    with current-list = nil
+    with balance-needed = target-length
+    with current-weld-carry-over-length = 0.0
+    with first-time? = t
+    for weld in sorted-welds-list
+    do
+    (trace-from weld
+      (cond
+       ((<= !weld-length balance-needed)
+        (setf current-length (+ current-length !weld-length)
+          current-list (append current-list (list (list weld !weld-length t 0 1)))
+          balance-needed (- target-length current-length)
+          )
+        (if (equal current-length target-length)
+          (setf all-lists (append all-lists (list current-list ))
+            current-list '()
+            )
+          )
+        )
+       (t
+        (if (> balance-needed 0)
+          (setf current-length (+ current-length balance-needed)
+            current-list (append current-list (list (list weld balance-needed nil 0 (/ balance-needed !weld-length))))
+            current-weld-carry-over-length (- !weld-length balance-needed)
+            balance-needed 0.0
+            all-lists (append all-lists (list current-list))
+            )
+          (setf current-weld-carry-over-length (- !weld-length balance-needed))
+          )
+        (when first-time?
+          (setf target-length size-2
+            first-time? nil
+            )
+          )
+        (if (> target-length current-weld-carry-over-length)
+          (setf current-list (list (list weld current-weld-carry-over-length nil (- 1 (/ current-weld-carry-over-length !weld-length)) 1))
+            current-length current-weld-carry-over-length
+            balance-needed (- target-length current-length)
+            )
+          (loop
+            while (>= current-weld-carry-over-length target-length)
+            do
+            (setf temp-list (append temp-list (list (list (list weld target-length nil
+                                                            (/ (- !weld-length current-weld-carry-over-length) !weld-length)
+                                                            (/ (+ (- !weld-length current-weld-carry-over-length) target-length) !weld-length)
+                                                            ))))
+              current-weld-carry-over-length (- current-weld-carry-over-length target-length)
+              )
+            )
+          )
+        (when temp-list
+          (setf all-lists (append all-lists  temp-list)
+            temp-list '()
+            current-list '()
+            )
+          (if (> current-weld-carry-over-length 0)
+            (setf current-list (append current-list (list (list weld current-weld-carry-over-length nil (- 1 (/ current-weld-carry-over-length !weld-length)) 1)))
+              current-length current-weld-carry-over-length
+              balance-needed (- target-length current-length)
+              )
+            )
+          )
+        )
+       )
+      )
+    finally
+    (return
+     (cond
+      ((< current-length target-length)
+       (list (setf all-lists (append all-lists (list current-list)))))
+      (t
+       (progn
+         (setf all-lists
+           (append all-lists
+             (list
+              (list
+               (list
+                (first (last sorted-welds-list))
+                current-weld-carry-over-length
+                nil
+                (-
+                 1
+                 (/
+                  current-weld-carry-over-length
+                  (the weld-length (:from (first (last sorted-welds-list))))
+                  )
+                 )
+                1)
+               )
+              )
+             )
+           )
+         (list all-lists)
+         )
+       )
+      )
+     )
+    )
+  )
+
+
+
+;;; Method for sorting the welds according to their weld map's.
+
+(define-method group-welds-by-x-ray-weld-length  tank-shell-welds-and-x-ray-maps-manager-class (collection min max) 
+  (let*(
+        welds-collection
+        final-list
+        )
+    (loop
+      for welds-list in collection
+      do
+      (sort welds-list 'sort-on-sta-angle-and-course-number)
+      (setf welds-collection (append welds-collection (generate-xray-plan-group welds-list min max)))
+      )
+    welds-collection
+    )
+  )
+
+;;; predicate function for sorting on the basis of course-number and start-angle.
+
+
+(defun sort-on-sta-angle-and-course-number (object-1 object-2)
+  (if (< (trace-from object-1 !start-angle) (trace-from object-2 !start-angle))
+    t
+    (if (> (trace-from object-1 !start-angle) (trace-from object-2 !start-angle))
+      nil
+      (if (< (trace-from object-1 !course-number) (trace-from object-2 !course-number))
+        t
+        nil
+        )
+      )
+    )
+  )
+
+(define-method x-ray-plan-group-collection-method tank-shell-welds-and-x-ray-maps-manager-class (x-ray-plan-list)
+  (let* (
+         group
+         )
+    (loop
+      for collection-on-size in x-ray-plan-list
+      do
+      (loop
+        for welds-groups in collection-on-size
+        do
+        (setf group (append group (list welds-groups)))
+        )
+      )
+;;;     (loop
+;;;       for weld-group in (flat-the-list-method group)
+;;;       do
+;;;       collect (nth 0 weld-group)
+;;;       )
+    group
+    )
+  )
+
+
+
+
+(define-method permutation-of-welders tank-shell-welds-and-x-ray-maps-manager-class (list)
+  (let* (
+         welders-combination
+         )
+    (loop
+      for welder-inside in list
+      do
+      (loop
+        for welder-outside in list
+        do
+        (setf welders-combination (append welders-combination (list (format nil "~d - ~d" welder-inside welder-outside))))
+        )
+      )
+    welders-combination
+    )
+  )
+
+(defun flat-the-list-method (list)
+  (let* (
+         collection
+         )
+    (loop
+      for item in list
+      do
+      (if (atom (first item))
+        (setf collection (append collection (list  item)))
+        (loop
+          for i in item
+          do
+          (setf collection (append collection (list  i)))
+          )
+        )
+      )
+    collection
+    )
+  )
+
+
+(defun welder-pair (list)
+  (let*
+      (
+       (welder-pair '())
+       )
+    (loop
+      for welder-out in list
+      do
+      (loop
+        for welder-in in list
+        do
+        (setf welder-pair (append welder-pair (list (list welder-out welder-in))))
+        )
+      )
+    welder-pair
+    )
+  )
+
+
+
+;;;;----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+

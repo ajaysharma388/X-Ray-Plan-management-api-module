@@ -1,0 +1,117 @@
+(in-package :aml)
+
+(define-class weld-X-Ray-mark-class
+  :inherit-from(sheet-class)
+  :properties(
+              X-Ray-Sheet-width             (default 3)
+              X-Ray-Sheet-height            (default 2)
+              X-Ray-Type                    (default nil)
+              render                        'shaded
+              welds-objects-list            (default nil)
+              x-ray-location                (default nil)
+              height                        ^X-Ray-Sheet-height
+              width                         ^X-Ray-Sheet-width
+              weld-start-region-fraction    (default nil)
+              weld-end-region-fraction      (default nil)
+              (group-object :class 'group-object
+                objects-list      (loop
+                                    for weld in ^welds-objects-list
+                                    do
+                                    collect (nth 0 weld)
+                                    )
+                )
+              (weld-object :class 'option-property-class
+                label "Select Weld for X-Ray"
+                options-list (loop
+                               for list in ^welds-objects-list
+                               do
+                               collect (first list)
+                               )
+                labels-list (loop
+                              for weld in ^welds-objects-list
+                              do
+                              collect (the std-mark (:from (nth 0 weld)))
+                              )
+                formula (nth 0 (first ^welds-objects-list))
+                mode 'menu
+                )              
+              )
+  )
+
+
+(define-method property-classification-list weld-X-Ray-mark-class()
+  '(
+    (
+     "Main Properties"
+     (      
+      X-Ray-Sheet-width          
+      X-Ray-Sheet-height
+      X-Ray-location-center-coords
+      weld-object
+      (x-ray-location
+       (
+        label "XRay Location Percent"
+         automatic-apply? t
+         increment 1
+         min-value 0
+         max-value 100 
+         foreground-color "black"
+         )
+       ui-general-input-data-increment-option-class
+       )      
+      ("Zoom" (
+               button1-parameters '(zoom-object (the))
+               button3-parameters '(zoom 'all)
+               size '(1 0.33)
+               )
+       ui-work-area-action-button-class     
+       )
+
+     ("Blink" (
+               button1-parameters '(blink (the))
+               button3-parameters '()
+               size '(1 0.33)
+               )
+      ui-work-area-action-button-class
+      )
+     ("highlight" (
+                   button1-parameters '(highlight-selected-object  (list (the)) (list "orange") (list 5) 3)
+                   button3-parameters '(highlight-selected-object  (list (the)) (list "white") (list 0) 3)
+                   size '(1 0.33)
+                   )
+      ui-work-area-action-button-class
+      )
+     ("Zoom On Group" (
+                       button1-parameters '(zoom-object !group-object)
+                       button3-parameters '(zoom 'all)
+                       size '(1 0.33)
+                       )
+      ui-work-area-action-button-class     
+      )
+      
+     ("Blink Complete Group" (
+                              button1-parameters '(draw-blink-objects (list !group-object));;loop
+                              button3-parameters '()
+                              size '(1 0.33)
+                              )
+      ui-work-area-action-button-class
+      )
+     
+     ("highlight Group" (
+                         button1-parameters '(highlight-selected-object  (list !group-object) (list "orange") (list 5) 3)
+                                          
+                         button3-parameters '(highlight-selected-object  (list !group-object) (list "white") (list 5) 3)
+ 
+                         size '(1 0.33)
+                         )
+      ui-work-area-action-button-class
+      )
+     )
+    )
+  )
+  )
+
+
+
+
+

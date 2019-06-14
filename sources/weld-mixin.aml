@@ -1,0 +1,19 @@
+(in-package :aml)
+
+(define-class weld-mixin
+  :inherit-from (object)
+  :properties (
+               weld-size              (default nil)
+               weld-number            (default 0)
+               weld-type              (default nil)
+               weld-length            (default 0)                                              ;;;; ------------------description---------------------
+               welder-name            (format nil "~d - ~d" ^welder-inside ^welder-outside)    ;;;; this class contains all the properties of the weld 
+               std-mark               ""                                                       ;;;; this is base class from which all the welds class 
+               course-number          (default 0)                                              ;;;; inherit from this class.
+               course-height          (default 0)
+               welder-inside          (default nil)
+               welder-outside         (default nil)
+               )
+  )
+
+

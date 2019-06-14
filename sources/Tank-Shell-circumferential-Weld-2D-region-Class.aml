@@ -1,0 +1,46 @@
+(in-package :aml)
+
+
+(define-class Tank-Shell-circumferential-Weld-2D-region-Class
+  :inherit-from(Tank-Shell-Circumferential-weld-Rollout-2d-class)
+  :properties(
+              weld-source-object      (default nil)
+              color                   (default nil)
+              tank-od                 (the tank-od (:from ^weld-source-object))
+              std-mark                (the std-mark (:from ^weld-source-object))
+              label                   (format nil "~d-weld-region" ^std-mark)
+
+              start-angle             (the start-angle (:from ^weld-source-object))
+              end-angle               (the end-angle (:from ^weld-source-object))
+
+              elevation               (the elevation (:from ^weld-source-object))
+              
+              start-fraction          (default nil)
+              end-fraction            (default nil)
+
+              line-width              1
+
+              start-end-angles-list   (compute-weld-region-angles ^self ^start-fraction ^end-fraction)
+              weld-start-angle             (nth 0 ^start-end-angles-list)
+              weld-end-angle               (nth 1 ^start-end-angles-list)
+
+              weld-length             (* (degrees-to-radians  (- ^weld-end-angle ^weld-start-angle)) (/ ^tank-od 2))
+              point1                  (the superior point-0-coords coordinates)
+              point2                  (the superior point-1-coords coordinates)
+
+              (point-0-coords :class 'point-object
+                coordinates (list (- ^x-coordinate-start-position) ^elevation 0) 
+                )
+              
+              (point-1-coords :class 'point-object
+                coordinates (list (- (- ^x-coordinate-start-position) ^weld-length) ^elevation 0) 
+                )
+              x-coordinate-start-position (* (degrees-to-radians  ^weld-start-angle) (/ ^tank-od 2))
+              
+              )
+  )
+
+(define-method compute-weld-region-angles Tank-Shell-Circumferential-weld-Rollout-2d-class (start-fraction end-fraction)
+  (list (+ !start-angle (* (- !end-angle !start-angle) start-fraction)) (+ !start-angle (* (- !end-angle !start-angle) end-fraction)))
+  )
+

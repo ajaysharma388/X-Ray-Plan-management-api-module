@@ -1,0 +1,297 @@
+(in-package :aml)
+
+
+
+(define-class tank-shell-welds-and-x-ray-maps-manager-form-class
+  :inherit-from(
+                ui-grid-form-mixin ;;; Model Interface Widgets are "Grid Based" rather than "Pixel Dimension Based", but they can be forced to use pixels.
+                ui-form-class
+                )
+  :properties (
+               selected-tank-object   nil ;;; selected-tank-shell-welds-and-x-ray-maps-manager-object
+               x-offset               200
+               y-offset               200
+               height                 550
+               width                  520
+               label                  "X-Ray Welds Map Model"
+               measurement            'pixels;; This is the default formula anyway.
+               resize?                nil ;;; Allow form to be resized by a user.
+               shrink?                nil ;;; Minimize Button Exists?
+               ;; Define Grid Unit.
+               unit-height            25
+               unit-width             ^width
+               close-action           '(hide (the superior))
+               )
+  :subobjects(
+              (courses-height-list :class 'ui-property-field-class
+                coordinates            '(0 0) ;;; Y coord then X coord in grid units.
+                size                   '(1 1)
+                model-property-object (when ^^selected-tank-object
+                                        (the courses-height-list self (:from ^^selected-tank-object))
+                                        )
+                label                 "Courses Height List"
+                automatic-apply?      t
+                )
+              (courses-plates-start-angles-list :class 'ui-property-field-class
+                coordinates          '(1 0) ;;; Y coord then X coord in grid units.
+                size                 '(1 1)
+                model-property-object (when ^^selected-tank-object
+                                        (the courses-plates-start-angles-list self (:from ^^selected-tank-object))
+                                        )
+                label                "Courses Plates Start Angles List"
+                automatic-apply?     t
+                )  
+              (tank-od :class 'ui-property-field-class
+                coordinates         '(2 0) ;;; Y coord then X coord in grid units.
+                size                '(1 1)
+                model-property-object (when ^^selected-tank-object
+                                        (the tank-od self (:from ^^selected-tank-object))
+                                        )
+                label               "Tank Diameter"
+                automatic-apply?    t
+                )
+              (x-ray-sheet-width-field :class 'ui-property-field-class
+                coordinates         '(3 0) ;;; Y coord then X coord in grid units.
+                size                '(1 1)
+                model-property-object (when ^^selected-tank-object
+                                        (the x-ray-sheet-width self (:from ^^selected-tank-object))
+                                        )
+                label               "X Ray Sheet Height"
+                automatic-apply?    t
+                )
+              (x-ray-sheet-height-field :class 'ui-property-field-class
+                coordinates         '(4 0) ;;; Y coord then X coord in grid units.
+                size                '(1 1)
+                model-property-object (when ^^selected-tank-object
+                                        (the x-ray-sheet-height self (:from ^^selected-tank-object))
+                                        )
+                label               "X Ray Sheet Width"
+                automatic-apply?    t
+                )
+              (text-height :class 'ui-property-field-class
+                coordinates         '(5 0) ;;; Y coord then X coord in grid units.
+                size                '(1 1)
+                model-property-object (when ^^selected-tank-object
+                                        (the text-height self (:from ^^selected-tank-object))
+                                        )
+                label               "Text Height"
+                automatic-apply?    t
+                )
+              (welders-list :class 'ui-property-field-class
+                coordinates        '(6 0) ;;; Y coord then X coord in grid units.
+                size               '(1 1)
+                model-property-object (when ^^selected-tank-object
+                                        (the welders-list self (:from ^^selected-tank-object))
+                                        )
+                label              "Welders List"
+                automatic-apply?  t
+                )      
+              (welds-size-list :class 'ui-property-field-class
+                coordinates       '(7 0) ;;; Y coord then X coord in grid units.
+                size              '(1 1)
+                model-property-object (when ^^selected-tank-object
+                                        (the welds-size-list self (:from ^^selected-tank-object))
+                                        )
+                label             "Welds Size List"
+                automatic-apply?  t
+                )        
+              (weld-type-list :class 'ui-property-field-class
+                coordinates '(8 0) ;;; Y coord then X coord in grid units.
+                size '(1 1)
+                model-property-object (when ^^selected-tank-object
+                                        (the weld-types-list self (:from ^^selected-tank-object))
+                                        )
+                label "Weld Types List"
+                automatic-apply? t
+                )          
+              (circumferential-x-ray-plan-min-size :class 'ui-property-field-class
+                coordinates '(9 0) ;;; Y coord then X coord in grid units.
+                size '(1 1)
+                model-property-object (when ^^selected-tank-object
+                                        (the circumferential-x-ray-plan-min-size self (:from ^^selected-tank-object))
+                                        )
+                label "Circumferential XRay Plan Min Size"
+                automatic-apply? t
+                )          
+              (circumferential-x-ray-plan-max-size  :class 'ui-property-field-class
+                coordinates '(10 0) ;;; Y coord then X coord in grid units.
+                size '(1 1)
+                model-property-object (when ^^selected-tank-object
+                                        (the circumferential-x-ray-plan-max-size  self (:from ^^selected-tank-object))
+                                        )
+                label "Circumferential XRay Plan Max Size"
+                automatic-apply? t
+                )          
+              (vertical-x-ray-plan-min-size  :class 'ui-property-field-class
+                coordinates '(11 0) ;;; Y coord then X coord in grid units.
+                size '(1 1)
+                model-property-object (when ^^selected-tank-object
+                                        (the vertical-x-ray-plan-min-size  self (:from ^^selected-tank-object))
+                                        )
+                label "Vertical XRay Plan Min Size"
+                automatic-apply? t
+                )          
+              (vertical-x-ray-plan-max-size :class 'ui-property-field-class
+                coordinates '(12 0) ;;; Y coord then X coord in grid units.
+                size '(1 1)
+                model-property-object (when ^^selected-tank-object
+                                        (the vertical-x-ray-plan-max-size  self (:from ^^selected-tank-object))
+                                        )
+                label "Vertical XRay Plan Max Size"
+                automatic-apply? t
+                )
+              
+           
+              (vertical-welds-form :class 'ui-multiple-objects-access-button-class
+                coordinates '(14 0) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 2))
+                model-property-object (when ^^selected-tank-object
+                                        (the vertical-welds-editable-form self (:from ^^selected-tank-object))
+                                        )
+                label "Vertical Welds Form"
+                automatic-apply? t
+                )
+              
+              (circumferential-welds-form :class 'ui-multiple-objects-access-button-class
+                coordinates (list 14  (/ 1 2)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 2))
+                model-property-object (when ^^selected-tank-object
+                                        (the circumferential-welds-editable-form self (:from ^^selected-tank-object))
+                                        )
+                label "Circumferential Welds Form"
+                automatic-apply? t
+                )
+
+
+
+;;;               (shell-rollout-drawings :class 'ui-multiple-objects-access-button-class
+;;;                 coordinates '(16 0) ;;; Y coord then X coord in grid units.
+;;;                 size (list 1 (/ 1 2))
+;;;                 button1-action '(when ^^selected-tank-object
+;;;                                   (draw (the drawings x-ray-and-weld-map shell-weld-map-class shell-rollout-drawings (:from ^^^^^selected-tank-object)))
+;;;                                   )
+;;;                 button3-action '(when ^^selected-tank-object
+;;;                                   (undraw (the drawings x-ray-and-weld-map shell-weld-map-class shell-rollout-drawings (:from ^^^^^selected-tank-object)))
+;;;                                   )
+;;;                 label "Shell Rollout Drawings"
+;;;                 automatic-apply? t
+;;;                 )
+;;;               
+;;;               (xray-drawings :class 'ui-multiple-objects-access-button-class
+;;;                 coordinates (list 16  (/ 1 2)) ;;; Y coord then X coord in grid units.
+;;;                 size (list 1 (/ 1 2))
+;;;                 button1-action '(when ^^selected-tank-object
+;;;                                   (draw (the drawings x-ray-and-weld-map shell-weld-map-class xray-maps-drawings (:from ^^^^^selected-tank-object)))
+;;;                                   )
+;;;                 button3-action '(when ^^selected-tank-object
+;;;                                   (undraw (the drawings x-ray-and-weld-map shell-weld-map-class xray-maps-drawings (:from ^^^^^selected-tank-object)))
+;;;                                   )
+;;;                 label "X Ray Drawings"
+;;;                 automatic-apply? t
+;;;                 )
+              
+              (Draw-3d-Model :class 'ui-grid-action-button-class
+                coordinates (list 16 0) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Draw 3D Model"
+                button1-action '(when ^^selected-tank-object
+                                  (draw (the 3D-model (:from ^^selected-tank-object)))
+                                  )
+                button3-action '(when ^^selected-tank-object
+                                  (undraw (the 3D-model (:from ^^selected-tank-object)))
+                                  )
+                )
+              (Draw-3d-plan :class 'ui-grid-action-button-class
+                coordinates (list 16 (/ 1 3)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Draw 3D Plan"
+                button1-action  '(when ^^selected-tank-object
+                                   (draw (the  x-rays-plans-3d-model (:from (the x-ray-plan (:from ^^selected-tank-object)))))
+                                   )
+                button3-action  '(when ^^selected-tank-object
+                                   (undraw (the  x-rays-plans-3d-model (:from (the x-ray-plan (:from ^^selected-tank-object)))))
+                                   )
+                )
+              (Undraw-3d :class 'ui-grid-action-button-class
+                coordinates (list 16 (/ 2 3)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Undraw Both"
+                button1-action  '(when ^^selected-tank-object
+                                   (clear)
+                                   )   
+                )
+              (draw-2d-model  :class 'ui-grid-action-button-class
+                coordinates (list 17 0) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Draw 2D Model"
+                button1-action '(when ^^selected-tank-object
+                                  (draw (the 2D-model (:from ^^selected-tank-object)))
+                                  )
+                button3-action '(when ^^selected-tank-object
+                                  (undraw (the 2D-model (:from ^^selected-tank-object)))
+                                  )
+                )
+              (Draw-2d-plan :class 'ui-grid-action-button-class
+                coordinates (list 17 (/ 1 3)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Draw 2D Plan"
+                button1-action  '(when ^^selected-tank-object
+                                   (draw (the  x-rays-plans-2d-model (:from (the x-ray-plan (:from ^^selected-tank-object)))))
+                                   )
+                button3-action  '(when ^^selected-tank-object
+                                   (undraw (the  x-rays-plans-2d-model (:from (the x-ray-plan (:from ^^selected-tank-object)))))
+                                   )
+                )
+              (Undraw-2d :class 'ui-grid-action-button-class
+                coordinates (list 17 (/ 2 3)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Undraw Both"
+                button1-action  '(when ^^selected-tank-object
+                                   (clear)
+
+                                   ) 
+                )
+              (coordinate-system-object :class 'ui-grid-action-button-class
+                coordinates (list 18 0) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Draw Coordinate System"
+                button1-action '(
+                                 (draw (the tank-coordinate-system (:from ^^selected-tank-object)))
+                                 )
+                button3-action  '(
+                                  (undraw (the tank-coordinate-system (:from ^^selected-tank-object)))
+                                  )
+                )
+              (refresh :class 'ui-grid-action-button-class
+                coordinates (list 18 (/ 1 3)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Refresh"
+                button1-action '(
+                                 (regen)
+                                 )
+                )
+              (fit :class 'ui-grid-action-button-class
+                coordinates (list 18 (/ 2 3)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Fit Display"
+                button1-action '(zoom 'all)
+                )
+              (close :class 'ui-grid-action-button-class
+                coordinates (list 20 (/ 2 3)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Close"
+                button1-action '(hide (the superior superior))
+                )
+              )
+  )
+
+
+(define-method display  tank-shell-welds-and-x-ray-maps-manager-form-class()
+  (call-next-method)
+  (set-topmost-form (the) t)
+  )
+
+(define-method hide tank-shell-welds-and-x-ray-maps-manager-form-class()
+  (set-topmost-form (the) nil)
+  (call-next-method)
+  )

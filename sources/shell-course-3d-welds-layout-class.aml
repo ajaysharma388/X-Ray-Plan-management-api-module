@@ -1,0 +1,54 @@
+(in-package :aml)
+
+
+(define-class shell-course-3d-welds-layout-class
+  :inherit-from(object)
+  :properties(
+              welders-list                        (default nil)
+              welders                             (default nil)
+              welders-inside-outside              (default nil)
+              text-height                         (default nil)
+              course-height                       (default nil)
+              welds-size-list                     (default nil)
+              weld-types-list                     (default nil)
+              course-number                       (default 0)
+              weld-length                         (default 5)
+              tank-od                             (default 50) 
+              start-elevation                     (default 0)         
+              course-plates-start-angles-list     (default nil)       
+              )
+  :subobjects(
+              (Vertical-Welds :class 'shell-course-3d-vertical-welds-class
+                welders-list                    ^^welders-list
+                text-height                     ^^text-heigth
+                tank-od                         ^^tank-od    
+                start-elevation                 ^^start-elevation                               ;;;; vertical welds series will be drawn
+                welds-size-list                 ^^welds-size-list
+                course-plates-start-angles-list ^^course-plates-start-angles-list
+                weld-types-list                 ^^weld-types-list
+                weld-length                     ^^weld-length
+                course-number                   ^^course-number
+                course-height                   ^^course-height
+                welders-inside-outside          ^^welders-inside-outside
+                welders                         ^^welders
+                )
+              (Circumferential-Welds :class 'shell-course-3d-circumferential-welds-class
+                welders-list                    ^^welders-list
+                text-height                     ^^text-heigth
+                tank-od                         ^^tank-od    
+                elevation                       ^^start-elevation                               ;;;; circumferential welds series will be drawn
+                welds-size-list                 ^^welds-size-list
+                course-plates-start-angles-list ^^course-plates-start-angles-list
+                weld-types-list                 ^^weld-types-list
+                weld-length                     ^^weld-length
+                course-number                   ^^course-number
+                course-height                   ^^course-height
+                welders-inside-outside          ^^welders-inside-outside
+                welders                         ^^welders
+                )
+              )
+  )
+
+
+
+

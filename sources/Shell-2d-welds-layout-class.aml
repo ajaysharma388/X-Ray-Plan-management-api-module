@@ -1,0 +1,59 @@
+(in-package :aml)
+
+
+
+;;;                courses-height-list              ^^courses-height-list
+;;;                vertical-welds-hash-table        ^^vertical-welds-hash-table
+;;;                circumferential-welds-hash-table ^^circumferential-welds-hash-table
+
+(define-class Shell-2d-welds-layout-class
+  :inherit-from(series-object)
+  :properties(
+              courses-plates-start-angles-list    (default nil) 
+              vertical-welds-hash-table           (default nil)
+              circumferential-welds-hash-table    (default nil)
+              courses-height-list                 (default nil)
+              center                              (default '(0 0 0))
+              series-prefix                       'Course                             
+              class-expression                    'shell-course-2d-welds-layout-class
+              quantity                            (length ^courses-height-list)
+              init-form '(
+                          start-elevation         (nth 2 (point-along-vector
+                                                          ^^center
+                                                          '(0 0 1)
+                                                          (loop
+                                                            for height in (subseq ^^courses-height-list 0 ^index)
+                                                            sum height
+                                                            )
+                                                          )
+                                                    )
+                          course-number                      ^index
+                          vertical-welds-hash-table          ^^vertical-welds-hash-table
+                          circumferential-welds-hash-table   ^^circumferential-welds-hash-table
+                          course-plates-start-angles-list    (nth ^index ^^courses-plates-start-angles-list)
+                          )
+              )
+  :subobjects(
+              (top-circumferential-welds :class 'line-object
+                point1 (list
+                        (* (/ ^^tank-od -2) (degrees-to-radians (first (first (last ^^courses-plates-start-angles-list)))))
+                        (loop
+                          for height in ^^courses-height-list
+                          do
+                          sum height
+                          )
+                        0
+                        )
+                point2 (list 
+                        (* (/ ^^tank-od -2) (degrees-to-radians (+ 360 (first (first (last ^^courses-plates-start-angles-list))))))
+                        (loop
+                          for height in ^^courses-height-list
+                          do
+                          sum height
+                          )
+                        0
+                        )
+                color "sky blue"
+                )
+              )
+  )

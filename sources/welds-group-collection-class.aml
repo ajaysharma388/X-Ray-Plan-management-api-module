@@ -1,0 +1,28 @@
+(in-package :aml)
+
+
+(define-class welds-group-collection-class
+  :inherit-from(object)
+  :properties(
+              x-ray-plan-group-for-circumferential-welds       (default nil) 
+              x-ray-plan-group-for-vertical-welds              (default nil)
+              )
+  :subobjects(
+              (circumferential-welds-group :class 'series-object
+                class-expression    'welds-group-class
+                quantity            (length ^^x-ray-plan-group-for-circumferential-welds)
+                init-form '(
+                            group-number (+ ^index 1)
+                            object-list (nth ^index ^^^x-ray-plan-group-for-circumferential-welds)
+                            )
+                )
+              (vertical-welds-group :class 'series-object
+                class-expression    'welds-group-class
+                quantity            (length ^^x-ray-plan-group-for-vertical-welds)
+                init-form '(
+                            group-number (+ ^index 1)
+                            object-list (nth ^index ^^^x-ray-plan-group-for-vertical-welds)
+                            )
+                )
+              )
+  )

@@ -1,0 +1,36 @@
+(in-package :aml)
+
+
+(define-class shell-course-2d-circumferential-welds-class
+  :inherit-from(series-object)
+  :properties(
+              course-plates-start-angles-list     (default nil)
+              circumferential-welds-hash-table    (default nil) 
+              weld-direction                      (default 'circumferential)        
+              start-elevation                     (default 0)
+              course-number                       (default 0)
+              series-prefix                       'circumferential-weld
+              class-expression                    'Tank-Shell-Circumferential-weld-Rollout-2d-class
+              quantity                            (length ^course-plates-start-angles-list)
+              init-form '(
+                          elevation                     ^^start-elevation
+                          course-number                 ^^course-number
+                          weld-number                   ^index
+                          weld-source-object            (gethash (format nil "C~dH~d" ^course-number ^index) ^^circumferential-welds-hash-table)
+                          )                     
+;;;               )
+;;;   :subobjects(
+              (start-coordinates :class 'point-object
+                coordinates                        (list
+                                                    (-  (* (/ ^^tank-od 2) (degrees-to-radians (nth 0 ^course-plates-start-angles-list ))))
+                                                    ^^start-elevation
+                                                    0
+                                                    )
+                )
+              (local-coordinate-system :class 'coordinate-system-class
+                origin '(0 0 0)
+                length  5
+                )
+              )
+  )
+

@@ -1,0 +1,7 @@
+(in-package :aml)
+
+
+(define-class weld-3d-mixin
+  :inherit-from(weld-mixin)
+  :properties()
+  )

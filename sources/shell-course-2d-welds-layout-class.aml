@@ -1,0 +1,31 @@
+(in-package :aml)
+
+
+(define-class shell-course-2d-welds-layout-class
+  :inherit-from(object)
+  :properties(
+              start-elevation                     (default 0)
+              course-number                       (default 0)
+              vertical-welds-hash-table           (deafult nil)
+              circumferential-welds-hash-table    (default nil)
+              course-plates-start-angles-list     (default nil)
+              )
+  :subobjects(
+              (Vertical-Welds :class 'shell-course-2d-vertical-welds-class
+                start-elevation                    ^^start-elevation
+                course-number                      ^^course-number
+                vertical-welds-hash-table          ^^vertical-welds-hash-table
+                course-plates-start-angles-list    ^^course-plates-start-angles-list
+                )
+              (Circumferential-Welds :class 'shell-course-2d-circumferential-welds-class
+                start-elevation                    ^^start-elevation
+                course-number                      ^^course-number
+                circumferential-welds-hash-table   ^^circumferential-welds-hash-table
+                course-plates-start-angles-list    ^^course-plates-start-angles-list
+                )
+              )
+  )
+
+
+
+

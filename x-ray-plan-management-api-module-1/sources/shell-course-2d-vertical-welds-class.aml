@@ -1,0 +1,31 @@
+(in-package :aml)
+
+
+(define-class shell-course-2d-vertical-welds-class
+  :inherit-from(series-object)
+  :properties(
+              course-plates-start-angles-list     (default nil)
+              vertical-welds-hash-table           (default nil)
+              weld-direction                      (default 'vertical)         
+              start-elevation                     (default 0)
+              course-number                       (default 0)
+              series-prefix                       'vertical-welds
+              class-expression                    'Tank-Shell-Vertical-weld-Rollout-2D-Class
+              quantity                            (+ 1 (length ^course-plates-start-angles-list))
+              init-form '(
+                          start-elevation               ^^start-elevation
+                          course-number                 ^^course-number 
+                          weld-number                   ^index
+                          position-angle                (if (equal ^index (length ^^course-plates-start-angles-list))
+                                                          (+ 360 (the start-angle (:from ^weld-source-object :error nil :relation nil)))
+                                                          (the start-angle (:from ^weld-source-object :error nil :relation nil))
+                                                          )
+                          weld-source-object            (if (equal ^index  (length ^^course-plates-start-angles-list))
+                                                          (gethash (format nil "C~dV0" ^course-number) ^^vertical-welds-hash-table)
+                                                          (gethash (format nil "C~dV~d" ^course-number ^index) ^^vertical-welds-hash-table)
+                                                          )
+                          )                    
+              )
+  )
+
+;;; provide the logic for the last vertical weld

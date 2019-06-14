@@ -1,0 +1,13 @@
+(in-package :aml)
+
+
+(define-class weld-mark-label-class
+  :inherit-from (text-class)
+  :properties (
+               weld-object (default (the superior superior))
+               )
+  )
+
+(define-method edit-node-method-get-source-object weld-mark-label-class ()
+  !weld-object
+  )

@@ -1,0 +1,44 @@
+(in-package :aml)
+
+
+(define-class shell-course-3d-vertical-welds-class
+  :inherit-from(series-object)
+  :properties(
+              welders                              (default nil)
+              text-height                          (default nil)
+              welders-list                         (default nil)
+              welders-inside-outside               (default nil)
+              weld-types-list                      (default nil)
+              welds-size-list                      (default nil)
+              start-elevation                      (default nil)
+              course-number                        (default nil)
+              course-height                        (default nil) 
+              weld-direction                       (default 'vertical)  
+              tank-od                              (default nil)            
+              course-plates-start-angles-list      (default nil)
+              series-prefix                        'vertical-welds
+              class-expression                     'Tank-Shell-Vertical-Weld-3D-Class
+              quantity                             (length !course-plates-start-angles-list) 
+              init-form '(
+                          tank-od                  ^^tank-od
+                          start-angle              (nth ^index ^course-plates-start-angles-list)
+                          weld-length              ^^course-height       
+                          start-elevation          ^^start-elevation
+                          course-number            ^^course-number
+                          weld-number              ^index
+                          weld-size                (get-random-weld-size ^^welds-size-list)
+                          weld-types-list          ^^weld-types-list
+                          welders-list             ^^welders-list
+                          welders-inside-outside   ^^welders-inside-outside
+                          text-height              ^^^text-height
+                          welders                  ^^^welders
+                          )
+              )
+  )
+
+
+
+
+(defun get-random-weld-size (welds-size-list)
+  (nth (random (length welds-size-list)) welds-size-list)  
+  )

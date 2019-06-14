@@ -1,0 +1,19 @@
+(in-package :aml)
+
+
+(define-class weld-map-table-class
+  :inherit-from(general-table-info-for-drawings-system-class)
+  :properties(
+              Label-table-list                           '(("SEAM") ("WELDER(IN. - OUT)") ("REPORT")) 
+              table-title-text                           (default "WELD TABLE")
+              welds-list                                 (default nil)
+              table-data-list (loop
+                                for weld in ^welds-list
+                                do
+                                collect (trace-from weld
+                                          (list !std-mark !welder-name "")
+                                          )
+                                )
+              )
+  )
+

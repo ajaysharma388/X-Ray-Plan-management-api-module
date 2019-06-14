@@ -1,0 +1,55 @@
+(in-package :aml)
+
+(define-class welds-group-class
+  :inherit-from(group-object)
+  :properties(
+              group-number    (default nil)
+              object-list     (default nil)
+              label           (format nil "welds-group-~d" !group-number)
+              )
+  )
+
+
+
+(define-method property-classification-list  welds-group-class ()
+  '(
+    (
+     "Main Properties"
+     (
+      object-list
+      ("Draw" (
+               button1-parameters '(draw (the))
+               button3-parameters '(undraw (the))
+               size '(1 0.5)
+               )
+       ui-work-area-action-button-class
+       )
+      ("Zoom" (
+               button1-parameters '(zoom-object (the))
+               button3-parameters '(zoom 'all)
+               size '(1 0.5)
+               )
+       ui-work-area-action-button-class
+       )
+      ("Blink" (
+                ;; button1-parameters '(blink (the))
+                button1-parameters '(blink (the))
+                button3-parameters '()
+                size '(1 0.5)
+                )
+       ui-work-area-action-button-class
+       )
+      ("highlight" (
+                    ;; button1-parameters '(blink (the))
+                    button1-parameters '(highlight-selected-object  (list (the)) (list "green") (list 5) 3)
+                    button3-parameters '(highlight-selected-object  (list (the)) (list "white") (list 5) 3)
+                    size '(1 0.5)
+                    )
+       ui-work-area-action-button-class
+       )
+      )
+     )
+    )
+  )
+
+

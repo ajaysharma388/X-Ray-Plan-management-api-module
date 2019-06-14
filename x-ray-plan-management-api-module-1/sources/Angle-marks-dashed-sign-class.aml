@@ -1,0 +1,29 @@
+(in-package :aml)
+
+(define-class Angle-marks-dashed-sign-class
+  :inherit-from(line-object)
+  :properties(
+              name                       (default nil)
+              point1                     ^point-1
+              point2                     ^point-2                                   ;;;; ----------------Description----------------
+              line-type                  (default 1)                                ;;;; this class is used to draw the dashed Angle
+              point-1                    (default nil)                              ;;;; mark on the drawing to indicate the angles
+              point-2                    (default nil)                              ;;;; measure.
+              )
+  :subobjects(
+              (Angle-mark :class 'text-class
+                text-string        (format nil "~dº" ^^name )
+                line-type          0
+                height             (/ 
+                                    (- 
+                                     (nth 1 
+                                       (the superior superior point-2)) 
+                                     (nth 1 
+                                       (the superior superior point-1))) 15)
+                origin-coords      ^^point2
+                orientation        (list
+                                    (translate (list 0 ^height 0))
+                                    )
+                )
+              )
+  )

@@ -1,0 +1,31 @@
+(in-package :aml)
+
+(define-class tank-models-x-ray-plan-class
+  :inherit-from(object)
+  :properties(
+              circumferential-welds-List-For-X-ray-plan    (default nil)
+              vertical-welds-List-For-X-ray-plan           (default nil)
+              welders-list                                 (default nil)
+              x-ray-sheet-width                            (default nil)
+              x-ray-sheet-height                           (default nil)
+              courses-height-list                          (default nil)
+              )
+  :subobjects(
+              (X-Rays-plans-3d-model :class 'weld-inspections-3d-model-X-Ray-plan-class
+                circumferential-welds-List-For-X-ray-plan    ^^circumferential-welds-List-For-X-ray-plan
+                vertical-welds-List-For-X-ray-plan           ^^vertical-welds-List-For-X-ray-plan
+                welders-list                                 ^^welders-list
+                x-ray-sheet-width                            ^^x-ray-sheet-width
+                x-ray-sheet-height                           ^^x-ray-sheet-height
+                courses-height-list                          ^^courses-height-list
+                )
+              (X-Rays-plans-2d-model :class 'weld-inspections-2d-model-X-Ray-plan-class
+                circumferential-welds-List-For-X-ray-plan    ^^circumferential-welds-List-For-X-ray-plan
+                vertical-welds-List-For-X-ray-plan           ^^vertical-welds-List-For-X-ray-plan
+                welders-list                                 ^^welders-list
+                x-ray-sheet-width                            ^^x-ray-sheet-width
+                x-ray-sheet-height                           ^^x-ray-sheet-height
+                courses-height-list                          ^^courses-height-list
+                )
+              )
+  )

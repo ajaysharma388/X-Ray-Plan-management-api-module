@@ -1,0 +1,18 @@
+(in-package :aml)
+
+
+(define-class X-ray-plan-for-circumferential-2d-welds-class
+  :inherit-from(series-object)
+  :properties(
+              label                                     (default nil)
+              circumferential-welds-list                (default nil)
+              class-expression                          'circumferential-2d-weld-x-ray-mark-class
+              tank-od                                   (default nil) 
+              quantity                                  (length ^circumferential-welds-list)
+              init-form '(
+                          welds-objects-list             (nth ^index ^^circumferential-welds-list)
+                          render                        'shaded
+                          color                          (generate-random-color '("red" "blue" "black"))
+                          )
+              )
+  )

@@ -1,0 +1,44 @@
+(in-package :aml)
+
+
+(define-class tank-geometry-and-drawing-class
+  :inherit-from (object)
+  :properties (
+               angle-marks                                         (default nil) 
+               tank-od                                             (default nil) 
+               geometry-0                                          (default nil)
+               geometry-1                                          (default nil)
+               welds-list-0                                        (default nil) 
+               welds-list-1                                        (default nil)
+               courses-height-list                                 (default nil)
+               vertical-welds-list                                 (default nil)
+               circumferential-welds-list                          (default nil)
+               drawings-text-height                                (default nil) 
+               )
+  :subobjects (           
+               (shell-rollout-drawings :class 'tank-shell-rollout-drawing-layout-class
+                 drawings-text-height                             ^^drawings-text-height
+                 welds-list                                       ^^welds-list-0
+                 angle-marks                                      ^^angle-marks
+                 geometry-source-object                           ^^geometry-0 
+                 viewport-0-objects-to-fit-within-limits-list     (append (list (the Shell-2D-Welds-layout top-circumferential-welds (:from ^geometry-source-object))) (the superior superior welds-list-0))   
+                 viewport-0-objects-to-include-list               (the superior superior welds-list-0)                  
+                 viewports-percent-size-list                      '(70 35)
+                 )
+               (xray-maps-drawings :class 'tank-2d-model-xray-plan-drawing-layout-class
+                 drawings-text-height                             ^^drawings-text-height
+                 welds-list                                       ^^welds-list-0
+                 geometry-source-object                           ^^geometry-1
+                 angle-marks                                      ^^angle-marks
+                 viewport-1-objects-to-fit-within-limits-list     (loop 
+                                                                    for w in (the superior superior welds-list-1) 
+                                                                    do 
+                                                                    append (children 
+                                                                            (the welds-regions 
+                                                                              (:from w))))
+                 viewports-percent-size-list                      '(70 35)
+                 )
+               )
+  )
+
+

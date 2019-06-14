@@ -1,0 +1,20 @@
+(in-package :aml)
+
+(define-class X-ray-plan-for-vertical-3d-welds-class
+  :inherit-from(series-object)
+  :properties(
+              label                                    (default 'X-ray)
+              X-Ray-type                               (default nil)
+              vertical-welds-list                      (default nil)
+              x-ray-sheet-width                        (default nil)
+              x-ray-sheet-height                       (default nil)
+              class-expression                         'vertical-3d-weld-x-ray-mark-class
+              line-width                               (default 2)
+              quantity                                 (length ^vertical-welds-list)
+              init-form '(
+                          welds-objects-list           (nth ^index ^^vertical-welds-list)
+                          X-Ray-type                   ^^X-Ray-type
+                          color                        (generate-random-color '("red" "blue" "black"))
+                          )
+              )
+  )

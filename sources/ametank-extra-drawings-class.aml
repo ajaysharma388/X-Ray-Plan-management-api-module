@@ -1,0 +1,15 @@
+(in-package :aml)
+
+(define-class ametank-extra-drawings-class
+  :inherit-from(object)
+  :properties(
+              tank-source-object          ^^^self
+              drawings-text-height        (default 10)
+              )
+  :subobjects(
+              (shell-weld-map :class 'shell-weld-map-class
+                tank-source-object     ^^tank-source-object
+                drawings-text-height   ^^drawings-text-height
+                )
+              )
+  )

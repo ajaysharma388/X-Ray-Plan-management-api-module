@@ -1,0 +1,35 @@
+(in-package :aml) 
+
+(define-class tank-2d-model-xray-plan-drawing-layout-class
+  :inherit-from (drawing-layout-class)
+  :properties (
+               drawings-text-height                                (default nil)
+               welds-list                                          (default nil)
+               vertical-welds-list                                 (default nil)
+               circumferential-welds-list                          (default nil)
+               tank-od                                             (default nil)
+               geometry-source-object                              (default nil)
+               control-points-source                               (default nil);;added
+               viewport-1-objects-to-fit-within-limits-list        (default nil)
+               viewport-1-objects-to-include-list		             (default nil)
+               viewports-percent-size-list                         (default nil)
+               viewports-scale-factor-list                         '(1 20)
+               paper-size                                          '(11 17)
+               paper-orientation	                                  'landscape
+               ;; internal properties
+               paper-dim-list                                      ^paper-size
+               viewports-inheritance-list                          '(tank-viewport-1-class)
+               dimensions-inheritance-list                         '(tank-weld-map-table-class)
+               ;; Required by the coil-dimensions-class
+               viewport-1-object                                   (the superior viewports-objects viewport-1)
+               )
+  :subobjects(
+              (Table :class 'weld-map-table-class
+                )      
+              )
+  )
+
+
+
+
+

@@ -1,0 +1,16 @@
+(in-package :aml)
+
+(define-class vertical-weld-3d-mixin
+  :inherit-from(weld-3d-mixin)
+  :properties(
+              weld-direction         (default 'vertical)
+              std-mark               (format nil
+                                       "C~dV~d" 
+                                       ^course-number
+                                       ^weld-number
+                                       )
+              tank-od                (default 50)
+              start-angle            (default 10)
+              start-elevation        (default 0)
+              )
+  )

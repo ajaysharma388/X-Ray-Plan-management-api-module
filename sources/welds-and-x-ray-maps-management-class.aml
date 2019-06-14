@@ -1,0 +1,22 @@
+(in-package :aml)
+
+
+;;;  create module method for the project
+;;; (create-module "tank-shell-welds-and-x-ray-maps-manager-module" "2019.02.05.1" (list :X-Ray-Plan-management-api-module) '(1))
+
+;;;  compile-system method call for the compilation of the code
+;;; (compile-system :X-Ray-Plan-management-api-module :force? t :forget? t)
+
+(define-class welds-and-x-ray-maps-management-class
+  :inherit-from(tank-shell-welds-and-x-ray-maps-manager-class)
+  :properties(
+              tank-source-object                        ^^^^self
+              courses-height-list                       (when ^tank-source-object
+                                                          (get-tank-shell-courses-height-list ^tank-source-object)
+                                                          )
+              courses-plates-start-angles-list          (when ^tank-source-object
+                                                          (get-tank-shell-courses-plates-start-angle-list ^tank-source-object)
+                                                          )
+              tank-od                                   (the tank-outer-diameter (:from ^tank-source-object :error nil :relation nil))
+              )
+  )

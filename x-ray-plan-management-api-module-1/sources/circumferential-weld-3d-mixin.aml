@@ -1,0 +1,22 @@
+(in-package :aml)
+
+(define-class circumferential-weld-3d-mixin
+  :inherit-from (weld-3d-mixin)
+  :properties(
+              weld-direction                          (default 'circumferential)
+              std-mark                                (format nil
+                                                        "C~dH~d"           
+                                                        ^course-number 
+                                                        ^weld-number
+                                                        )
+              elevation                               (default 0)
+              start-angle                             (default 10)
+              end-angle                               (default 40)
+              tank-od                                 (default 50)
+              x-coordinate-start-position             (default 0)
+              )
+  )
+
+
+;;; 1. this class is used in the 3D-moddel for the the circumferential-weld.
+;;; 2. property 'x-coordinate-start-position is used to possition the weld in the 3d-model.

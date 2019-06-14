@@ -1,0 +1,208 @@
+(in-package :aml)
+
+(define-class tank-weld-map-table-class
+  :inherit-from(object)
+  :properties(
+              vertical-welds-list                        (default nil)
+              circumferential-welds-list                 (default nil)
+              viewports-objects                          (default nil)
+              text-coords                                '(0 -2.5 0)
+              text-coords-id                             '(0 -0.85 0)
+              leader-offset-for-text                     0.1
+              drawings-text-height                       (default nil)  
+              )
+  :subobjects(            
+              (table-0 :class 'weld-map-table-class
+                attachment-point-coords-in-viewport-object (list -8.013181 5.015742 0)
+                scale-factor                               0.5
+                table-title-text                           (default "VERTICAL WELDS")
+                attachment-corner                          4
+                welds-list                                 ^^vertical-welds-list 
+                )
+              (table-1 :class 'weld-map-table-class
+                attachment-point-coords-in-viewport-object (list -6.466 5.016 0)
+                table-title-text                           (default "CIRCUMFERENTIAL WELDS")
+                scale-factor                               0.5
+                attachment-corner                          4
+                welds-list                                 ^^circumferential-welds-list    
+                )
+              (seam-id :class 'text-for-drawings-system-class
+                origin-coords-in-viewport-object ^^text-coords-id
+                viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                text-string "Seam Identification Key"
+                text-style  ':underline
+                alignment-list '(:center :center)
+                )
+              (text-for-view-des :class 'text-for-drawings-system-class
+                origin-coords-in-viewport-object '(1 1 0)
+                viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                text-string "Looking From Outside To Inside"
+                alignment-list '(:center :center)
+                text-style ':underline
+                )
+              (text :class 'text-for-drawings-system-class
+                 origin-coords-in-viewport-object ^^text-coords
+                 viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                 text-string "C 3 V 9"
+                 alignment-list '(:center :center)
+                 )
+               (leard-1 :class 'note-label-leader-for-drawings-system-class
+                 target-points-coords-in-viewport-object-list (list (add-points (the origin-coords (:from ^^text)) (list (- (+ (compute-text-width (the text-string (:from ^^text)) (the font-name (:from ^^text))
+                                                                                                                                 (the height (:from ^^text))) ^^leader-offset-for-text)) 0 0)))
+                 viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                 viewport-object-list (list (the main-viewport-object (:from ^^viewports-objects)))
+                 text-string-list '("SHELL RING NUMBER" "/ COURSE NUMBER")
+                 origin-coords-in-viewport-object (add-points (nth 0 ^target-points-coords-in-viewport-object-list) '(-2 0 0))
+				 drag-able? nil
+                 )
+               (leard-2 :class 'note-label-leader-for-drawings-system-class
+                 target-points-coords-in-viewport-object-list (list (add-points (the origin-coords (:from ^^text)) (list 0  (+ (the height (:from ^^text)) ^^leader-offset-for-text) 0)))
+                 viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                 viewport-object-list (list (the main-viewport-object (:from ^^viewports-objects)))
+                 text-string-list '("POSITION OF WELD\\(H- HORIZONTAL)\\(V- VERTICAL)")
+                 origin-coords-in-viewport-object (add-points (nth 0 ^target-points-coords-in-viewport-object-list) '(1.5 1 0))
+				 drag-able? nil
+                 )
+               (leard-3 :class 'note-label-leader-for-drawings-system-class
+                 target-points-coords-in-viewport-object-list (list (add-points (the origin-coords (:from ^^text)) (list (+ (compute-text-width (the text-string (:from ^^text)) (the font-name (:from ^^text))
+                                                                                                                              (the height (:from ^^text))) ^^leader-offset-for-text) 0 0)))
+                 viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                 viewport-object-list (list (the main-viewport-object (:from ^^viewports-objects)))
+                 text-string-list '("CONSECUTIVE NUMBER TO REPRESENT\\WELD SEAM FOR THAT SPECIFIC RING\\AND POSITION.")
+                 origin-coords-in-viewport-object (add-points (nth 0 ^target-points-coords-in-viewport-object-list) '(2 0 0))
+				 drag-able? nil
+                 )
+              (text-0 :class 'text-for-drawings-system-class
+                origin-coords-in-viewport-object '(-1.5 -3 0)
+                viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                text-string "Code:"
+                alignment-list '(:center :left)
+                )
+              (text-1 :class 'text-for-drawings-system-class
+                origin-coords-in-viewport-object '(2.0 -3 0)
+                viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                text-string "Nominal Diameter:"
+                alignment-list '(:center :left)
+                )
+              (text-2 :class 'text-for-drawings-system-class
+                origin-coords-in-viewport-object '(2.0 -3.25 0)
+                viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                text-string "Nominal Height:"
+                alignment-list '(:center :left)
+                )
+              (text-3 :class 'text-for-drawings-system-class
+                origin-coords-in-viewport-object '(1 -3.5 0)
+                viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                text-string "Field Foreman:"
+                alignment-list '(:center :center)
+                )
+              (text-4 :class 'text-for-drawings-system-class
+                origin-coords-in-viewport-object '(-1.5 -3.75 0)
+                viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                text-string "Welder:"
+                alignment-list '(:center :left)
+                )
+              (text-5 :class 'text-for-drawings-system-class
+                origin-coords-in-viewport-object '(2.0 -3.75 0)
+                viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                text-string "Welder:"
+                alignment-list '(:center :left)
+                )
+              (text-6 :class 'text-for-drawings-system-class
+                origin-coords-in-viewport-object  '(-1.5 -4 0)
+                viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                text-string "Welder:"
+                alignment-list '(:center :left)
+                )
+              (text-7 :class 'text-for-drawings-system-class
+                origin-coords-in-viewport-object  '(2 -4 0)
+                viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                text-string "Welder:"
+                alignment-list '(:center :left)
+                )
+              (text-8 :class 'text-for-drawings-system-class
+                origin-coords-in-viewport-object  '(-1.5 -4.25 0)
+                viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                text-string "Welder:"
+                alignment-list '(:center :left)
+                )
+              (text-9 :class 'text-for-drawings-system-class
+                origin-coords-in-viewport-object  '(2 -4.25 0)
+                viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                text-string "Welder:"
+                alignment-list '(:center :left)
+                )
+   				 
+				  (text-10 :class 'text-for-drawings-system-class
+                origin-coords-in-viewport-object  '(2 -4.5 0)
+                viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                text-string "Company:"
+                alignment-list '(:center :left)
+                )
+               
+              (text-11 :class 'text-for-drawings-system-class
+                origin-coords-in-viewport-object  '(-1.5 -4.5 0)
+                viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                text-string "Date:   /  /20  "
+                alignment-list '(:center :left)
+                )
+              (line-0 :class 'line-object
+                point1 '(-1 -3.065 0)
+                point2 '(1 -3.065 0)
+                line-type 1
+                )
+              (line-1 :class 'line-object
+                point1 '(3.45 -3.065 0)
+                point2 '(5.45 -3.065 0)
+                line-type 1
+                )
+              (line-2 :class 'line-object
+                point1 '(3.26 -3.315 0)
+                point2 '(5.26 -3.315 0)
+                line-type 1
+                )
+              (line-3 :class 'line-object
+                point1 '(1.613 -3.56 0)
+                point2 '(3.613 -3.56 0)
+                line-type 1
+                )
+              (line-4 :class 'line-object
+                point1 '(-0.9051 -3.82 0)
+                point2 '(1.9051 -3.82 0)
+                line-type 1
+                )
+              (line-5 :class 'line-object
+                point1 '(2.61 -3.82 0)
+                point2 '(4.61 -3.82 0)
+                line-type 1
+                )
+              (line-6 :class 'line-object
+                point1 '(-0.9051 -4.07 0)
+                point2 '(1.9051 -4.07 0)
+                line-type 1
+                )
+              (line-7 :class 'line-object
+                point1 '(2.61 -4.07 0)
+                point2 '(4.61 -4.07 0)
+                line-type 1
+                )
+              (line-8 :class 'line-object
+                point1 '(-0.9051 -4.315 0)
+                point2 '(1.9051 -4.315 0)
+                line-type 1
+                )
+              (line-9 :class 'line-object
+                point1 '(2.61 -4.315 0)
+                point2 '(4.61 -4.315 0)
+                line-type 1
+                )
+              (line-10 :class 'line-object
+                point1 '(2.8 -4.57 0)
+                point2 '(4.8 -4.57 0)
+                line-type 1
+                )
+              )
+  )
+
+
+;; (compile-system :Tank-welds-management-class :force? t :forget? t)

@@ -1,0 +1,58 @@
+(in-package :aml)
+
+(define-class shell-weld-map-class
+  :inherit-from(tank-geometry-and-drawing-class)
+  :properties(
+              tank-source-object                           (default nil)
+              geometry-0-source-object                     (the 3d-model shell welds-and-x-ray-maps-management-class 2d-model (:from ^tank-source-object :error nil :relation nil))
+              geometry-1-source-object                     (the 3d-model shell welds-and-x-ray-maps-management-class x-ray-plan (:from ^tank-source-object :error nil :relation nil))
+              tank-od                                      (the 3d-model shell welds-and-x-ray-maps-management-class tank-od (:from ^tank-source-object :error nil :relation nil))
+              geometry-0                                   ^geometry-0-source-object 
+              geometry-1                                   ^geometry-1-source-object 
+              welds-list-0                                 (the 3d-model shell welds-and-x-ray-maps-management-class welds-object-list-0  (:from ^tank-source-object :error nil :relation nil))
+              welds-list-1                                 (the 3d-model shell welds-and-x-ray-maps-management-class welds-object-list-1  (:from ^tank-source-object :error nil :relation nil))
+              Angle-marks                                  (the 3d-model shell welds-and-x-ray-maps-management-class Angle-marks (:from ^tank-source-object :error nil :relation nil))
+              vertical-welds-list                          (the 3d-model shell welds-and-x-ray-maps-management-class vertical-welds-list   (:from ^tank-source-object :error nil :relation nil))
+              circumferential-welds-list                   (the 3d-model shell welds-and-x-ray-maps-management-class circumferential-welds-list  (:from ^tank-source-object :error nil :relation nil))
+              courses-height-list                          (the 3d-model shell welds-and-x-ray-maps-management-class courses-height-list (:from ^tank-source-object :error nil :relation nil))
+              drawings-text-height                         (default 10)
+              )
+  )
+
+
+
+
+(define-method post-edit-node-method shell-weld-map-class ()
+  (display-shell-welds-and-x-ray-maps-manager-form
+   self
+   )
+  )
+
+(defun display-shell-welds-and-x-ray-maps-manager-form (tank-object
+                                                             &key
+                                                             (new? t)
+                                                             )
+  (let* (
+         ;; Note a "add-form"
+         (form (display-form 'tank-object-form
+                 :class 'shell-weld-and-x-ray-maps-manager-form-class
+                 :new? new?
+                 )
+           )
+         )
+
+    (when form
+      (change-formula (the selected-tank-object self (:from form))
+        (append
+         (find-the-trace
+          tank-object
+          :from (the selected-tank-object self (:from form))
+          )
+         '((:error nil :relation nil))
+         )
+        )
+      (update form)
+      )
+    form
+    )
+  )

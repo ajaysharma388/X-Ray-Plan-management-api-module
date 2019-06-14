@@ -1,0 +1,31 @@
+(in-package :aml)
+
+(define-class welds-data-form
+  :inherit-from (data-model-node-mixin)
+  :properties (
+               data         (default nil)   
+               (list-info :class 'data-grid-property-class
+                 formula ^data		
+                 add-row-with-right-click?          t
+                 close-form-after-apply?            nil
+                 column-title-list                  '("STD-MARK" "WELDER" "WELD TYPE" "WELD LENGTH" "WELD SIZE")
+                 column-tooltip-list                nil
+                 column-width-list                  '(20 20  20 20 30 20)
+                 delete-row-with-right-click?       t
+                 editable-field?                    t
+                 row-preffix                        "WELD"
+                 ui-type-list                       '(editable editable editable editable editable)
+                 )
+               ;;; property-objects-list (list (the superior list-info self))
+               )
+  )
+
+(define-method property-classification-list  welds-data-form ()
+  '(
+    ("MAIN PROPERTIES"
+     (
+      list-info
+      )
+     )
+    )
+  )

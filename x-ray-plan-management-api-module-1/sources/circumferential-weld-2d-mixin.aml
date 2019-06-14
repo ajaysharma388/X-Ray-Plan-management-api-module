@@ -1,0 +1,18 @@
+(in-package :aml)
+
+(define-class circumferential-weld-2d-mixin
+  :inherit-from (weld-2d-mixin)
+  :properties(
+              weld-direction                          (default 'circumferential)
+              std-mark                                (format nil
+                                                        "C~dH~d"                        ;;;; ------------------description---------------------------
+                                                        ^course-number                  ;;;; this class is used for the 2d-model of the tank
+                                                        ^weld-number                    ;;;; that means the tank rollout.for the circumferential weld. 
+                                                        )
+              elevation                               (default 0)
+              start-angle                             (default 10)
+              end-angle                               (default 40)
+              tank-od                                 (default 50)
+              x-coordinate-start-position             (default nil)          ;;;; start position for the weld in the 2d-model.
+              )
+  )

@@ -1,0 +1,142 @@
+(in-package :aml)
+
+(define-class tank-viewport-0-class
+  :inherit-from (object)
+  :properties (
+               drawings-text-height (default nil)
+               viewport-0-camera-target-coords (let* (
+                                                      (min-max-list
+                                                       (get-objects-minmax-box-points-by-vectors
+                                                        ^viewport-0-objects-to-fit-within-limits-list
+                                                        (cross-product ^viewport-0-up-vector ^viewport-0-eye-vector)
+                                                        ^viewport-0-up-vector
+                                                        )
+                                                       )
+                                                      )
+                                                 (mid-point (nth 0 min-max-list) (nth 1 min-max-list))
+                                                 )
+               viewport-0-eye-vector '(0 0 1)
+               viewport-0-up-vector  '(0 1 0)
+               viewports-percent-size-list (default nil)
+               viewport-0-objects-to-fit-within-limits-list (default nil)
+               viewport-0-objects-to-include-list (default nil)
+               viewport-0-objects-to-display (append ^angle-marks (children ^angle-labels)  (children ^welds-label) (remove-duplicates (append ^viewport-0-objects-to-fit-within-limits-list ^viewport-0-objects-to-include-list)))
+               viewport-0-objects-max-dim-list (let* (
+                                                      (min-max-list (minmax-box-list ^viewport-0-objects-to-fit-within-limits-list))
+                                                      (min-values (nth 0 min-max-list));; (minX minY minZ)
+                                                      (max-values (nth 1 min-max-list));; (maxX maxY maxZ)
+                                                      )
+                                                 (list
+                                                  (- (nth 0 max-values) (nth 0 min-values))
+                                                  (- (nth 1 max-values) (nth 1 min-values))
+                                                  )
+                                                 );; only calculating x and y
+               paper-width (default nil);; take value from parent drawing-layout-class
+               paper-height (default nil);; take value from parent drawing-layout-class              
+               viewports-x-y-dim-on-paper-list (list
+                                                (* (nth 0 ^viewports-percent-size-list) ^paper-width  0.01)
+                                                (* (nth 1 ^viewports-percent-size-list) ^paper-height  0.01)
+                                                )               
+               viewport-0-scale-factor-list  (list
+                                              1
+                                              (+ 6 (compute-viewport-scale
+                                                    (nth 0 (the superior viewports-percent-size-list))
+                                                    (nth 1 (the superior viewports-percent-size-list))
+                                                    (the superior paper-width) 
+                                                    (the superior paper-height)
+                                                    (nth 0 
+                                                      (the superior viewport-0-objects-max-dim-list)) 
+                                                    (nth 1 
+                                                      (the superior viewport-0-objects-max-dim-list)) :offsets-percentage 1)))
+               (angle-labels :class 'series-object
+                 class-expression 'text-class
+                 series-prefix    'angle-Label
+                 quantity         (length ^^angle-marks)
+                 init-form        '(
+                                    height        ^^drawings-text-height
+                                    text-string   (format nil "~d°" (* 90 ^index))
+                                    direction-coords-rotated '(1 0 0)
+                                    origin-coords (the point2 (:from (nth ^index ^^angle-marks)))
+                                    orientation   (list 
+                                                   (translate 
+                                                    (list 0 
+                                                      ^height 0)))
+                                    )
+                 )
+               (welds-label :class 'series-object
+                 class-expression 'text-class
+                 series-prefix    'Weld-Label
+                 quantity         (length ^^welds-list)
+                 init-form        '(
+                                    text-string   (the std-mark (:from (nth ^index ^^welds-list)))
+                                    coordinates   '(0 0 0)
+                                    height        ^^drawings-text-height
+                                    direction-coords-rotated  (if 
+                                                                  (equal nil 
+                                                                    (the end-angle 
+                                                                      (:from 
+                                                                       (nth 
+                                                                        (the superior index) 
+                                                                        (the superior superior welds-list)) :error nil))) 
+                                                                '(0 1 0)
+                                                                '(1 0 0)
+                                                                )
+                                    orientation  (if (equal nil 
+                                                       (the end-angle 
+                                                         (:from 
+                                                          (nth 
+                                                           (the superior index) 
+                                                           (the superior superior welds-list)) :error nil)))
+                                                   (list
+                                                    (translate
+                                                     (add-points
+                                                      (mid-point 
+                                                       (the point1 
+                                                         (:from 
+                                                          (nth 
+                                                           (the superior index) 
+                                                           (the superior superior welds-list)))) 
+                                                       (the point2 
+                                                         (:from 
+                                                          (nth 
+                                                           (the superior index) 
+                                                           (the superior superior welds-list)))))
+                                                      (list (* 0.75^height) 0 0)
+                                                      )
+                                                     )
+                                                    )
+                                                    (list
+                                                     (translate
+                                                      (add-points (mid-point 
+                                                                  (the point1 
+                                                                    (:from 
+                                                                     (nth 
+                                                                      (the superior index) 
+                                                                      (the superior superior welds-list)))) 
+                                                                  (the point2 
+                                                                    (:from 
+                                                                     (nth 
+                                                                      (the superior index) 
+                                                                      (the superior superior welds-list)))))
+                                                        (list 0 (* ^height 0.75) 0)
+                                                        )
+                                                      ) 
+                                                     )
+                                                    )
+                                    )
+                 )
+               )
+  :subobjects(                
+              (viewport-0 :class 'drawing-viewport-class
+                up-vector	                                     '(0 1 0)
+                eye-vector                                       '(0 0 1)
+                object-list	                                  ^^viewport-0-objects-to-display
+                size-list 	                                     ^^viewports-percent-size-list;; percentage
+                position-list	                                  '(25 50);; percentage lower left corner
+                camera-target-coords                             ^^viewport-0-camera-target-coords;; the x,y,z location on the geometry to set focus
+                scale-factor-set?                                t
+                scale-factor-list                                ^^viewport-0-scale-factor-list
+                draw-geometry-subobjects?                        nil 
+                )
+              )
+  )

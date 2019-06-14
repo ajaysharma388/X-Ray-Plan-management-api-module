@@ -1,0 +1,34 @@
+(in-package :aml)
+
+
+(define-class weld-inspections-3d-model-X-Ray-plan-class 
+  :inherit-from(object)
+  :properties(
+              welders-list                                     (default nil)
+              circumferential-welds-List-For-X-ray-plan        (default nil)  
+              vertical-welds-List-For-X-ray-plan               (default nil)
+              x-ray-sheet-width                                (default nil)
+              x-ray-sheet-height                               (default nil)
+              courses-height-list                              (default nil)
+              )
+  :subobjects(
+              (2-point-inspection-plan :class 'weld-inspections-X-Ray-3d-class
+                X-Ray-Type                                   "2-point-inspection"
+                line-width                                   2
+                circumferential-welds-List-For-X-ray-plan    ^^circumferential-welds-List-For-X-ray-plan 
+                vertical-welds-List-For-X-ray-plan           ^^vertical-welds-List-For-X-ray-plan
+                x-ray-sheet-width                            ^^x-ray-sheet-width
+                x-ray-sheet-height                           ^^x-ray-sheet-height
+                courses-height-list                          ^^courses-height-list 
+                )                  
+              (3-point-inspection-plan :class 'series-object
+                X-Ray-Type                                   "vertical-3-point-inspection"
+                class-expression                             'X-ray-plan-for-vertical-3d-welds-class
+                quantity                                     (length ^^courses-height-list)
+                init-form '(
+                            vertical-welds-list              (nth ^index ^^^vertical-welds-List-For-X-ray-plan)
+                            label                            (nth ^index ^^^welders-list)
+                            )
+                )
+              )
+  )

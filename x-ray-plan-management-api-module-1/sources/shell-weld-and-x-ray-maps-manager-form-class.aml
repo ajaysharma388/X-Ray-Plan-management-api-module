@@ -1,0 +1,86 @@
+(in-package :aml)
+
+
+
+(define-class shell-weld-and-x-ray-maps-manager-form-class
+  :inherit-from(
+                ui-grid-form-mixin ;;; Model Interface Widgets are "Grid Based" rather than "Pixel Dimension Based", but they can be forced to use pixels.
+                ui-form-class
+                )
+  :properties (
+               selected-tank-object   nil ;;; selected-tank-shell-welds-and-x-ray-maps-manager-object
+               x-offset               200
+               y-offset               200
+               height                 150
+               width                  250
+               label                  "Drawing's "
+               measurement            'pixels;; This is the default formula anyway.
+               resize?                nil ;;; Allow form to be resized by a user.
+               shrink?                nil ;;; Minimize Button Exists?
+               ;; Define Grid Unit.
+               unit-height            25
+               unit-width             ^width
+               close-action           '(hide (the superior))
+               )
+  :subobjects(            
+              (shell-rollout-drawings :class 'ui-multiple-objects-access-button-class
+                coordinates '(1 0) ;;; Y coord then X coord in grid units.
+                size (list 1 1)
+                button1-action '(when ^^selected-tank-object
+                                  (draw (the shell-rollout-drawings (:from ^^selected-tank-object)))
+                                  )
+                button3-action '(when ^^selected-tank-object
+                                  (undraw (the shell-rollout-drawings (:from ^^selected-tank-object)))
+                                  )
+                label "Shell Rollout Drawings"
+                automatic-apply? t
+                )
+              
+              (xray-drawings :class 'ui-multiple-objects-access-button-class
+                coordinates (list 2  0) ;;; Y coord then X coord in grid units.
+                size (list 1 1)
+                button1-action '(when ^^selected-tank-object
+                                  (draw (the xray-maps-drawings (:from ^^selected-tank-object)))
+                                  )
+                button3-action '(when ^^selected-tank-object
+                                  (undraw (the xray-maps-drawings  (:from ^^selected-tank-object)))
+                                  )
+                label "X Ray Drawings"
+                automatic-apply? t
+                )
+              
+              
+              (refresh :class 'ui-grid-action-button-class
+                coordinates (list 5 (/ 1 3)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Refresh"
+                button1-action '(
+                                 (regen)
+                                 )
+                )
+              (fit :class 'ui-grid-action-button-class
+                coordinates (list 5 (/ 2 3)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Fit Display"
+                button1-action '(zoom 'all)
+                )
+              (close :class 'ui-grid-action-button-class
+                coordinates (list 5 (/ 2 3)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Close"
+                button1-action '(hide (the superior superior))
+                )
+              )
+  )
+
+
+(define-method display  shell-weld-and-x-ray-maps-manager-form-class()
+  (call-next-method)
+  (set-topmost-form (the) t)
+  )
+
+(define-method hide shell-weld-and-x-ray-maps-manager-form-class()
+  (set-topmost-form (the) nil)
+  (call-next-method)
+  )
+  

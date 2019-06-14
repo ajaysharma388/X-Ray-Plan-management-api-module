@@ -1,0 +1,116 @@
+(in-package :aml)
+
+
+(define-class Tank-Shell-Vertical-Weld-3D-Class
+  :inherit-from(line-object vertical-weld-3d-mixin)
+  :properties(
+              welders                (default nil)
+              text-height            (default nil)
+              welders-inside-outside (default nil)
+              (weld-length :class 'computed-data-property-class
+                label                 "Weld Length"
+                formula               (default nil)
+                )
+              (weld-type :class 'option-property-class
+                formula              (first ^^weld-types-list)
+                label                "Weld Type"
+                options-list         ^^weld-types-list
+                mode                 'menu
+                )
+              (welder-inside :class 'option-property-class
+                formula             (nth 0 ^welders-inside-outside)
+                label               "Welder Inside"
+                options-list        ^welders
+                mode                'menu
+                )
+              (welder-outside :class 'option-property-class
+                formula             (nth 1 ^welders-inside-outside)
+                label               "Welder Outside"
+                options-list        ^welders
+                mode                'menu
+                )
+              point1                 (the point-1 coordinates)
+              point2                 (the point-2 coordinates)
+              color                  (default "orange")
+              line-width             (* 0.1 ^text-height)
+              (point-1 :class 'point-object
+                coordinates        (list
+                                    (* (cosd (- ^^start-angle)) (/ ^^tank-od 2))
+                                    (* (sind (- ^^start-angle)) (/ ^^tank-od 2))
+                                    ^^start-elevation
+                                    )
+                )
+              (point-2 :class 'point-object
+                coordinates        (list
+                                    (nth 0 (the  superior superior point-1 coordinates))
+                                    (nth 1 (the  superior superior point-1 coordinates))
+                                    (+ ^^start-elevation ^^weld-length)
+                                    )
+                )
+              )
+  :subobjects(
+              (mark-label :class 'weld-mark-label-class
+                direction-coords   '(0 0 1)
+                text-string        ^^std-mark                  
+                normal-vector      (let* 
+                                       ((coords 
+                                         (the superior origin-coords))) 
+                                     (list 
+                                      (nth 0 coords) 
+                                      (nth 1 coords) 0))
+                height             ^^text-height
+                text-height        ^height
+                line-width         (* 0.1 ^^text-height)
+                color              "cyan"
+                origin-coords      (mid-point ^^point1 ^^point2)
+                orientation        (list
+                                    (rotate 2 '(0 0 1))
+                                    )
+                )
+              )
+  )
+
+(define-method get-weld-properties-classification-list Tank-Shell-Vertical-Weld-3D-Class ()
+  (list
+   (the std-mark self)
+   (list (the weld-size self) '(label "Weld Size"))
+   (list (the weld-length self) '(label "Weld Length"))
+   (the weld-type self)
+   (the welder-inside self)
+   (the welder-outside self)
+   )
+  )
+
+(define-method property-classification-list  Tank-Shell-Vertical-Weld-3D-Class()
+  (list
+   (list
+    "Main Properties"
+    (append
+     (get-weld-properties-classification-list self)
+     '(
+       ("Zoom" (
+                button1-parameters '(zoom-object (the))
+                button3-parameters '(zoom 'all)
+                size '(1 0.33)
+                )
+        ui-work-area-action-button-class     
+        )
+       ("Blink" (
+                 button1-parameters '(blink (the))
+                 button3-parameters '()
+                 size '(1 0.33)
+                 )
+        ui-work-area-action-button-class
+        )
+       ("highlight" (
+                     button1-parameters '(highlight-selected-object  (list (the)) (list "green") (list 5) 3)
+                     button3-parameters '(highlight-selected-object  (list (the)) (list "white") (list 0) 3)
+                     size '(1 0.34)
+                     )
+        ui-work-area-action-button-class
+        )
+       )
+     )
+    )
+   )
+  )

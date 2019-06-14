@@ -1,0 +1,80 @@
+(in-package :aml)
+
+
+(define-class Tank-Shell-Vertical-weld-Rollout-2D-Class
+  :inherit-from(line-object vertical-weld-2d-mixin)
+  :properties(
+              weld-source-object             (default nil)
+              tank-od                        (the tank-od (:from ^weld-source-object :error nil :relation nil))
+              position-angle                 (default nil)
+              color                          (the color (:from ^weld-source-object :error nil :relation nil))
+              weld-length                    (the weld-length (:from ^weld-source-object  :error nil :relation nil))
+              start-elevation                (default 0)
+              point1                         (the superior point-0-coords coordinates)
+              point2                         (the superior point-1-coords coordinates)
+              x-coordinate-start-position    (- (* (/ ^tank-od 2) (degrees-to-radians ^position-angle)))
+              line-width                     (the line-width (:from ^weld-source-object  :error nil :relation nil))
+              text-height                    (the text-height (:from ^weld-source-object  :error nil :relation nil))
+              (point-0-coords :class 'point-object
+                coordinates (list ^x-coordinate-start-position ^start-elevation 0) 
+                )
+              (point-1-coords :class 'point-object
+                coordinates (list ^x-coordinate-start-position (+ ^weld-length ^start-elevation) 0) 
+                )
+              )
+  :subobjects(
+              (mark-label :class 'weld-mark-label-class
+                direction-coords   '(0 1 0)
+                text-string        ^^std-mark
+                color              "cyan"
+                line-width         ^^line-width
+                height             ^^text-height   
+                origin-coords      (mid-point ^^point1 ^^point2)
+                orientation        (list
+                                    (translate
+                                     (list 
+                                      (/ ^height 1.5)
+                                      0
+                                      0
+                                      )
+                                     )
+                                    )
+                )
+              )
+  )
+
+ 
+
+(define-method property-classification-list Tank-Shell-Vertical-weld-Rollout-2D-Class()
+  (list
+   (list
+    "Main Properties"
+    (append
+     (get-weld-properties-classification-list !weld-source-object)
+     '(
+       ("Zoom" (
+                button1-parameters '(zoom-object (the))
+                button3-parameters '(zoom 'all)
+                size '(1 0.33)
+                )
+        ui-work-area-action-button-class     
+        )
+       ("Blink" (
+                 button1-parameters '(blink (the))
+                 button3-parameters '()
+                 size '(1 0.33)
+                 )
+        ui-work-area-action-button-class
+        )
+       ("highlight" (
+                     button1-parameters '(highlight-selected-object  (list (the)) (list "green") (list 5) 3)
+                     button3-parameters '(highlight-selected-object  (list (the)) (list "white") (list 0) 3)
+                     size '(1 0.34)
+                     )
+        ui-work-area-action-button-class
+        )
+       )
+     )
+    )
+   )
+  )

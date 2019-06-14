@@ -1,0 +1,39 @@
+(in-package :aml)
+
+
+(define-class tank-welds-2d-model-class
+  :inherit-from(object)
+  :properties(
+              center                              (default '(0 0 0)) 
+              courses-height-list                 (default '(10 15 20 15))
+              vertical-welds-hash-table           (default nil)
+              circumferential-welds-hash-table    (default nil)
+              courses-plates-start-angles-list    (default nil)
+              )
+  :subobjects(
+              (Angle-marks :class 'series-object
+                Mark-position-list '(0 90 180 270 360)
+                series-prefix      'Angle-Mark
+                class-expression   'Angle-marks-dashed-sign-class
+                quantity           5
+                Mark-height             (loop
+                                          for length in (subseq ^^courses-height-list  0 (length ^^courses-height-list))
+                                          sum length
+                                          )
+                init-form '(
+                            name         (nth ^index ^^Mark-position-list) 
+                            point-1      (list  (- (* (/ ^tank-od 2) (degrees-to-radians (nth ^index ^^Mark-position-list)))) -10 0)
+                            point-2      (list  (- (* (/ ^tank-od 2) (degrees-to-radians (nth ^index ^^Mark-position-list)))) (* 1.25 ^^Mark-height) 0)
+                            )                    
+                )                  
+              (Shell-2D-Welds-layout :class 'Shell-2d-welds-layout-class
+                courses-height-list                ^^courses-height-list
+                vertical-welds-hash-table          ^^vertical-welds-hash-table
+                circumferential-welds-hash-table   ^^circumferential-welds-hash-table
+                courses-plates-start-angles-list   ^^courses-plates-start-angles-list
+                )
+              )
+  )
+
+
+

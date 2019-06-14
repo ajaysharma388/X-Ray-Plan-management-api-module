@@ -1,0 +1,36 @@
+(in-package :aml)
+
+
+(define-class tank-welds-3d-model-class
+  :inherit-from(object)
+  :properties(
+              welders                             (default nil)              
+              text-height                         (default nil)
+              welders-list                        (default nil)                      ;;;; welders-list
+              welds-size-list                     (default nil)                      ;;;; welds-size-list
+              weld-types-list                     (default nil)                      ;;;; weld-type
+              tank-od                             (default 50)                       ;;;; -----------Description----------------
+              center                              (default '(0 0 0))                 ;;;; this class is responsible for the 3D-model
+              courses-height-list                 (default nil)                      ;;;; list for the height of each courses 
+              courses-plates-start-angles-list    (default nil)                      ;;;; start-angle list for the each weld
+              welders-inside-outside              (default nil)
+              )
+  :subobjects(        
+              (Shell-3D-Welds-Layout :class 'Shell-3d-welds-layout-class
+                tank-od                           ^^tank-od                         ;;;; tank-shell-class draw's the tank shell
+                courses-plates-start-angles-list  ^^courses-plates-start-angles-list 
+                welders-list                      ^^welders-list
+                weld-size                         ^^welds-size-list
+                weld-types-list                   ^^weld-types-list                         
+                courses-height-list               ^^courses-height-list
+                text-height                       ^^text-height
+                welders-inside-outside-list       ^^welders-inside-outside-list
+                welders                           ^^welders
+                )
+              )
+  )
+
+
+(defun give-weld-type (list )
+  (nth (random (length list)) list)  
+  )
